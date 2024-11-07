@@ -8,7 +8,7 @@ def get_data(file):
 class Player:
   def __init__(self):
     self.items = []
-    self.location = 1
+    self.location = 0
   def update_location(self, id = int):
     print("Moving to new location!")
     self.location = id
@@ -44,7 +44,7 @@ def initiate():
     play_game()
 
 def play_game():
-  scene_one(PLAYER, DATA)
+  scene = scene_one(PLAYER, DATA)
   scene_two(PLAYER, DATA)
 
 initiate()
