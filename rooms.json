@@ -1,0 +1,32 @@
+{
+    "0": {
+        "name": "start",
+        "id": "0",
+        "description": "start description"
+    },
+    "1": {
+        "name": "dungeon",
+        "id": "1",
+        "description": "dungeon description"
+    },
+    "2": {
+        "name": "wizard tower",
+        "id": "2",
+        "description": "wiz tower description"
+    },
+    "3": {
+        "name": "caravan",
+        "id": "3",
+        "description": "caravan description"
+    },
+    "4": {
+        "name": "city",
+        "id": "4",
+        "description": "city description"
+    },
+    "5": {
+        "name": "shrine",
+        "id": "5",
+        "description": "shrine description"
+    }
+}

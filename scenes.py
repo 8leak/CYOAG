@@ -1,5 +1,5 @@
 def is_valid_choice(user_input):
-    return user_input in ("1", "2", "3")
+    return user_input in ("1", "2", "3", "4")
 
 
 def scene_one(PLAYER, DATA):
@@ -23,7 +23,7 @@ def scene_one(PLAYER, DATA):
          PLAYER.update_items(DATA["items"]["personalItems"][user_input])
          print(f"You fall to one knee, turning the {PLAYER.items[0]} over in your hands.")
    
-   choice_2 = "Where do you go?\n[1] Dungeon\n[2] Wizard tower\n[3] Carvan\n"
+   choice_2 = "Where do you go?\n[1] Dungeon\n[2] Wizard tower\n[3] Caravan\n"
 
    condition = True
    while condition: 
@@ -33,10 +33,13 @@ def scene_one(PLAYER, DATA):
          print("Please enter a number between 1 and 3.") 
       else: 
          condition = False
-         PLAYER.location = 2
+         PLAYER.location = user_input
 
 def scene_two(PLAYER, DATA):
    print(f"Welcome to scene two, in your inventory you have {PLAYER.items[0]}")
 
 def scene_three(PLAYER, DATA):
    print("and thats it")
+
+def play_scene(PLAYER, DATA, current_room):
+   current_room.get_description()
