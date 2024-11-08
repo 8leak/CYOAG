@@ -2,31 +2,70 @@
     "0": {
         "name": "start",
         "id": "0",
-        "description": "start description"
+        "description": [
+            "You stumble through the long grass, across the open field, the sunbaked scrub whipping at your bloodied legs.",
+            "Something clanks metallically on your hip. Ripping it from your belt, you peer at it, struggling to focus your eyes in the gloom."
+        ],
+        "choice": "It is...\n[1] ...the blackiron twist blade you lifted from the sellsword in the tavern?\n[2] ...a silver timepiece?\n[3] ...a string of rusted prayer beads?\n",
+        "exit_choice": "Where do you go?\n[1] Dungeon\n[2] Wizard tower\n[3] Caravan\n",
+        "exits": {
+            "1": "dungeon",
+            "2": "wizard tower",
+            "3": "caravan"}
     },
     "1": {
         "name": "dungeon",
         "id": "1",
-        "description": "dungeon description"
+        "description": ["dungeon description"],
+        "choice": "dungeon choice",
+        "exit_choice": "Dungeon: Where do you go?\n[1] Dungeon\n[2] Wizard tower\n[3] Caravan\n",
+        "exits": {
+            "1": "dungeon",
+            "2": "wizard tower",
+            "3": "caravan"}
     },
     "2": {
         "name": "wizard tower",
         "id": "2",
-        "description": "wiz tower description"
+        "description": ["wiz tower description"],
+        "choice": "wiz tower choice",
+        "exit_choice": "Wiz: Where do you go?\n[1] Dungeon\n[2] Wizard tower\n[3] Caravan\n",
+        "exits": {
+            "1": "dungeon",
+            "2": "wizard tower",
+            "3": "caravan"}
     },
     "3": {
         "name": "caravan",
         "id": "3",
-        "description": "caravan description"
+        "description": ["caravan description"],
+        "choice": "caravan choice",
+        "exit_choice": "Caravan: Where do you go?\n[1] Dungeon\n[2] Wizard tower\n[3] Caravan\n",
+        "exits": {
+            "1": "dungeon",
+            "2": "wizard tower",
+            "3": "caravan"}
     },
     "4": {
         "name": "city",
         "id": "4",
-        "description": "city description"
+        "description": ["city description"],
+        "choice": "city choice",
+        "exit_choice": "Where do you go?\n[1] Dungeon\n[2] Wizard tower\n[3] Caravan\n",
+        "exits": {
+            "1": "dungeon",
+            "2": "wizard tower",
+            "3": "caravan"}
     },
     "5": {
         "name": "shrine",
         "id": "5",
-        "description": "shrine description"
+        "description": ["shrine description"],
+        "choice": "shrine choice",
+        "exit_choice": "Where do you go?\n[1] Dungeon\n[2] Wizard tower\n[3] Caravan\n",
+        "exits": {
+            "1": "dungeon",
+            "2": "wizard tower",
+            "3": "caravan"}
     }
 }
