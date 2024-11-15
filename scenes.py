@@ -4,7 +4,7 @@ def get_valid_input(PLAYER, current_room):
       inputs = user_input.split(" ")
 
       if not inputs[0] in ("take", "inspect", "go"):
-         print("Invalid command. Please use 'take', 'inspect' or 'go'.")
+         print("Invalid command. Please use 'take', 'inspect' or 'go'.\nTake and inspect no implemented.")
          continue
       
       if len(inputs) < 2:

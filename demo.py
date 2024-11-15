@@ -20,8 +20,8 @@ class Player:
     PLAYER.location = result[0]
     print(f"Moving to {ROOMS[int(PLAYER.location)].name}!")
 
-
-class Room: 
+class Room:
+  # pydantic
   def __init__(self, name, id, description, choice, exit_choice, exits):
     self.name = name
     self.id = id
@@ -39,8 +39,6 @@ class Room:
     for exit_id, exit_name in self.exits.items():
       exit_names.append(exit_name)
     return exit_names
-
-  
 
 PLAYER = Player()
 DATA = get_data('items.json')
@@ -79,7 +77,6 @@ def play_game():
 
   print("Game over!")
   
-
 populate_rooms()
 initiate()
 
