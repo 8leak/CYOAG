@@ -16,7 +16,7 @@
     {
         "name": "dungeon",
         "id": "1",
-        "description": ["dungeon description"],
+        "description": ["a stinky dinky dungey wungey", "Also, Will is a spark."],
         "choice": "dungeon choice",
         "exit_choice": "dung: Where do you go?\nDungeon\nWizard tower\nCaravan\n",
         "exits": [

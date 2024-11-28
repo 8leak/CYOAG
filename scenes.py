@@ -35,5 +35,6 @@ def get_valid_input(PLAYER, current_room):
 
    
 def play_scene(PLAYER, current_room):
-   print(current_room.description[0])
+   for description in current_room.description:
+      print(description)
    get_valid_input(PLAYER, current_room)
