@@ -25,7 +25,7 @@ def get_valid_input(PLAYER, current_room):
 
       elif command == "go":
          print("i be goin")
-         if argument not in current_room.get_exit_names():
+         if argument not in current_room.exits:
             print("Location not available!")
             continue
          else:
@@ -34,7 +34,7 @@ def get_valid_input(PLAYER, current_room):
             break
 
    
-def play_scene(PLAYER, DATA, current_room):
-   current_room.display_description()
+def play_scene(PLAYER, current_room):
+   print(current_room.description[0])
    get_valid_input(PLAYER, current_room)
    print("are we alive")

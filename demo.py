@@ -1,4 +1,5 @@
 from scenes import *
+from rooms import *
 import json
 
 def get_data(file):
@@ -10,15 +11,26 @@ class Player:
     self.items = []
     self.location = "0"
 
-  def update_items(self, item):
+  """ def update_items(self, item):
     print(f"Added {item} to inventory!")
-    self.items.append(item)
+    self.items.append(item) """
   
   def update_location(self, current_room, exit):
-    # convert the exit dictionaries to tuple lists? 
-    result = [key for key, value in current_room.exits.items() if value == exit]
-    PLAYER.location = result[0]
-    print(f"Moving to {ROOMS[int(PLAYER.location)].name}!")
+    # result = [key for key, value in current_room.exits.items() if value == exit]
+    # PLAYER.location = ROOMS[int(exit.id)]
+    # print(f"Moving to {ROOMS[int(PLAYER.location)].name}!")
+
+    room = next((room for room in ROOMS if room.name == exit), None)
+
+    if room:
+        print(f"Found room: {room.name}, Description: {room.description}")
+        PLAYER.location = int(room.id)
+    else:
+        print("Room not found")
+
+
+
+
 
 class Room:
   # pydantic
@@ -41,9 +53,9 @@ class Room:
     return exit_names
 
 PLAYER = Player()
-DATA = get_data('items.json')
-ROOMS = []
-ROOMSDATA = get_data('rooms.json')
+# DATA = get_data('items.json')
+# ROOMS = []
+# ROOMSDATA = get_data('rooms.json')
 
 def populate_rooms():
   for room_id, room_data in ROOMSDATA.items():
@@ -73,11 +85,11 @@ def play_game():
       game_running = False
       print("I should be quitting!")
     else:
-      play_scene(PLAYER, DATA, current_room)
+      play_scene(PLAYER, current_room)
 
   print("Game over!")
   
-populate_rooms()
+# populate_rooms()
 initiate()
 
 # TODO: Random element, enemy, item, stage?
