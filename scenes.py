@@ -37,4 +37,3 @@ def get_valid_input(PLAYER, current_room):
 def play_scene(PLAYER, current_room):
    print(current_room.description[0])
    get_valid_input(PLAYER, current_room)
-   print("are we alive")
