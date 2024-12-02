@@ -1,9 +1,6 @@
-from scenes import get_valid_input
-from scenes import play_scene
-from rooms import ROOMS
-from rooms import Room
-from player import Player
-from player import PLAYER
+from player import PLAYER, Player
+from rooms import ROOMS, Room
+from scenes import get_valid_input, play_scene
 
 
 def initiate():

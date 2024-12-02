@@ -1,6 +1,7 @@
 import json
+from typing import Dict, List
+
 from pydantic import BaseModel
-from typing import List, Dict
 
 with open("rooms.json", "r") as file:
     rooms_data = json.load(file)
