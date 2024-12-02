@@ -3,7 +3,7 @@ def get_valid_input(PLAYER, current_room):
         user_input = input(current_room.exit_choice)
         inputs = user_input.split(" ")
 
-        if not inputs[0] in ("take", "inspect", "go"):
+        if inputs[0] not in ("take", "inspect", "go"):
             print(
                 "Invalid command. Please use 'take', 'inspect' or 'go'.\nTake and inspect no implemented."
             )
