@@ -1,9 +1,14 @@
 import json
+import os
 from typing import List
 
 from pydantic import BaseModel
 
-with open("rooms.json", "r") as file:
+current_dir = os.path.dirname(os.path.abspath(__file__))
+json_path = os.path.join(current_dir, "data", "rooms.json")
+
+
+with open(json_path, "r") as file:
     rooms_data = json.load(file)
 
 

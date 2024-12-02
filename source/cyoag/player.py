@@ -1,4 +1,4 @@
-from source.cyoag.rooms import ROOMS
+from rooms import ROOMS
 
 
 class Player:

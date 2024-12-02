@@ -1,10 +1,6 @@
-import sys
-sys.path.append('/Users/cal/Documents/GitHub/CYOAG/source/cyoag')
-
-
-from cyoag.player import PLAYER
-from cyoag.rooms import ROOMS
-from cyoag.scenes import play_scene
+from player import PLAYER
+from rooms import ROOMS
+from scenes import play_scene
 
 
 def initiate():
