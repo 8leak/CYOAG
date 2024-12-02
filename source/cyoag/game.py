@@ -3,8 +3,8 @@ from rooms import ROOMS
 from scenes import play_scene
 
 
-def initiate():
-    choice = input("Would you like to play, yes or no?\n")
+def initiate() -> None:
+    choice: str = input("Would you like to play, yes or no?\n")
     if choice == "no":
         input("Okay program will quit")
         exit()
@@ -12,8 +12,8 @@ def initiate():
         play_game()
 
 
-def play_game():
-    game_running = True
+def play_game() -> None:
+    game_running: bool = True
 
     while game_running:
         current_room = ROOMS[PLAYER.location]

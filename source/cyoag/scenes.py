@@ -1,7 +1,11 @@
-def get_valid_input(PLAYER, current_room):
+from player import Player
+from rooms import Room
+
+
+def get_valid_input(PLAYER: Player, current_room: Room) -> None:
     while True:
-        user_input = input(current_room.exit_choice)
-        inputs = user_input.split(" ")
+        user_input: str = input(current_room.exit_choice)
+        inputs: list[str] = user_input.split(" ")
 
         if inputs[0] not in ("take", "inspect", "go"):
             print(
@@ -36,7 +40,7 @@ def get_valid_input(PLAYER, current_room):
                 break
 
 
-def play_scene(PLAYER, current_room):
+def play_scene(PLAYER: Player, current_room: Room) -> None:
     for description in current_room.description:
         print(description)
     get_valid_input(PLAYER, current_room)

@@ -9,7 +9,7 @@ json_path = os.path.join(current_dir, "data", "rooms.json")
 
 
 with open(json_path, "r") as file:
-    rooms_data = json.load(file)
+    rooms_data: List[dict] = json.load(file)
 
 
 class Room(BaseModel):
@@ -21,7 +21,7 @@ class Room(BaseModel):
     exits: List[str]
 
 
-ROOMS = [Room(**room) for room in rooms_data]
+ROOMS: List[Room] = [Room(**room) for room in rooms_data]
 
 # for room in ROOMS:
 #     print(f"Room: {room.name}, ID: {room.id}, Exits: {room.exits}, Descriptions: {room.description[0]}")
