@@ -1,0 +1,6 @@
+[tool.isort]
+profile = "black"
+known_first_party = ["cyoag"]
+src_paths = ["source"]
+line_length = 79
+skip_gitignore = true
