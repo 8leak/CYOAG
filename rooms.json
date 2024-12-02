@@ -1,7 +1,7 @@
 [
     {
         "name": "start",
-        "id": "0",
+        "id": 0,
         "description": [
             "You stumble through the long grass, across the open field, the sunbaked scrub whipping at your bloodied legs.",
             "Something clanks metallically on your hip. Ripping it from your belt, you peer at it, struggling to focus your eyes in the gloom."
@@ -15,18 +15,17 @@
     },
     {
         "name": "dungeon",
-        "id": "1",
+        "id": 1,
         "description": ["a stinky dinky dungey wungey", "Also, Will is a spark."],
         "choice": "dungeon choice",
-        "exit_choice": "dung: Where do you go?\nDungeon\nWizard tower\nCaravan\n",
+        "exit_choice": "dung: Where do you go?\nCity\nShrine\n",
         "exits": [
-            "dungeon",
-            "wizard tower",
-            "caravan"]
+            "city",
+            "shrine"]
     },
     {
         "name": "wizard tower",
-        "id": "2",
+        "id": 2,
         "description": ["wiz tower description"],
         "choice": "wiz tower choice",
         "exit_choice": "wiz: Where do you go?\nDungeon\nWizard tower\nCaravan\n",
@@ -37,7 +36,7 @@
     },
     {
         "name": "caravan",
-        "id": "3",
+        "id": 3,
         "description": ["caravan description"],
         "choice": "caravan choice",
         "exit_choice": "carav: Where do you go?\nDungeon\nWizard tower\nCaravan\n",
@@ -48,7 +47,7 @@
     },
     {
         "name": "city",
-        "id": "4",
+        "id": 4,
         "description": ["city description"],
         "choice": "city choice",
         "exit_choice": "citeh: Where do you go?\nDungeon\nWizard tower\nCaravan\n",
@@ -59,7 +58,7 @@
     },
     {
         "name": "shrine",
-        "id": "5",
+        "id": 5,
         "description": ["shrine description"],
         "choice": "shrine choice",
         "exit_choice": "shrine: Where do you go?\nDungeon\nWizard tower\nCaravan\n",

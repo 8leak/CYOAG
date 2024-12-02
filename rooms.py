@@ -7,7 +7,7 @@ with open('rooms.json', 'r') as file:
 
 class Room(BaseModel):
     name: str
-    id: str
+    id: int
     description: List[str]
     choice: str
     exit_choice: str

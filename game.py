@@ -1,21 +1,9 @@
-from scenes import *
-from rooms import *
-
-class Player:
-  def __init__(self):
-    self.items = []
-    self.location = "0"
-  
-  def update_location(self, current_room, exit):
-    room = next((room for room in ROOMS if room.name == exit), None)
-
-    if room:
-        print(f"Found room: {room.name}")
-        PLAYER.location = int(room.id)
-    else:
-        print("Room not found")
-
-PLAYER = Player()
+from scenes import get_valid_input
+from scenes import play_scene
+from rooms import ROOMS
+from rooms import Room
+from player import Player
+from player import PLAYER
 
 def initiate():
   choice = input("Would you like to play, yes or no?\n")
@@ -29,9 +17,9 @@ def play_game():
   game_running = True
 
   while game_running:
-    current_room = ROOMS[int(PLAYER.location)]
+    current_room = ROOMS[PLAYER.location]
 
-    if current_room.id == "4":
+    if current_room.id == 4:
       game_running = False
       print("I should be quitting!")
     else:
