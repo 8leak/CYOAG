@@ -1,6 +1,6 @@
-from player import PLAYER
-from rooms import ROOMS
-from scenes import play_scene
+from source.cyoag.player import PLAYER
+from source.cyoag.rooms import ROOMS
+from source.cyoag.scenes import play_scene
 
 
 def initiate():
@@ -24,7 +24,7 @@ def play_game():
         else:
             play_scene(PLAYER, current_room)
 
-    print("Game over!")
+    print("Game over! you win?")
 
 
 initiate()
