@@ -2,8 +2,9 @@ import json
 from pydantic import BaseModel
 from typing import List, Dict
 
-with open('rooms.json', 'r') as file:
+with open("rooms.json", "r") as file:
     rooms_data = json.load(file)
+
 
 class Room(BaseModel):
     name: str
@@ -12,6 +13,7 @@ class Room(BaseModel):
     choice: str
     exit_choice: str
     exits: List[str]
+
 
 ROOMS = [Room(**room) for room in rooms_data]
 
