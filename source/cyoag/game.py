@@ -18,7 +18,7 @@ def play_game() -> None:
     while game_running:
         current_room = ROOMS[PLAYER.location]
 
-        if current_room.id == 4:
+        if current_room.name == "shrine":
             game_running = False
             print("I should be quitting!")
         else:
