@@ -1,15 +1,11 @@
 import json
 import os
-from typing import List
+from typing import Dict, List
 
 from pydantic import BaseModel
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 json_path = os.path.join(current_dir, "data", "rooms.json")
-
-
-with open(json_path, "r") as file:
-    rooms_data: List[dict] = json.load(file)
 
 
 class Room(BaseModel):
@@ -21,7 +17,8 @@ class Room(BaseModel):
     exits: List[str]
 
 
-ROOMS: List[Room] = [Room(**room) for room in rooms_data]
+with open(json_path, "r") as file:
+    rooms_data: List[Room] = [Room(**room) for room in json.load(file)]
 
-# for room in ROOMS:
-#     print(f"Room: {room.name}, ID: {room.id}, Exits: {room.exits}, Descriptions: {room.description[0]}")
+
+ROOMS: Dict[str, Room] = {room.name: room for room in rooms_data}
