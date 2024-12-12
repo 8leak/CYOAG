@@ -1,12 +1,13 @@
 from player import PLAYER
 from rooms import ROOMS
-from scenes import play_scene
+from manager import MANAGER, Manager
+from input import get_valid_input
 
 
 def initiate() -> None:
     choice: str = input("Would you like to play, yes or no?\n")
     if choice == "no":
-        input("Okay program will quit")
+        input("Press any button to quit.")
         exit()
     else:
         play_game()
@@ -16,15 +17,17 @@ def play_game() -> None:
     game_running: bool = True
 
     while game_running:
-        current_room = ROOMS[PLAYER.location]
-
+        current_room = MANAGER.location
+        print(f"(game.py) Moving to {current_room.name}")
+        
         if current_room.name == "shrine":
             game_running = False
-            print("I should be quitting!")
+            print("(game.py) I should be quitting!")
         else:
-            play_scene(PLAYER, current_room)
+            MANAGER.play_scene(PLAYER, current_room)
+            get_valid_input(PLAYER, current_room)
 
-    print("Game over! you win?")
+    print("(game.py) Game over! you win?")
 
 
 initiate()

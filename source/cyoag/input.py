@@ -1,5 +1,6 @@
 from player import Player
 from rooms import Room
+from manager import MANAGER, Manager
 
 
 def get_valid_input(PLAYER: Player, current_room: Room) -> None:
@@ -9,7 +10,7 @@ def get_valid_input(PLAYER: Player, current_room: Room) -> None:
 
         if inputs[0] not in ("take", "inspect", "go"):
             print(
-                "Invalid command. Please use 'take', 'inspect' or 'go'.\nTake and inspect no implemented."
+                "Invalid command. Please use 'take', 'inspect' or 'go'.\nTake and inspect not implemented."
             )
             continue
 
@@ -30,17 +31,11 @@ def get_valid_input(PLAYER: Player, current_room: Room) -> None:
             break
 
         elif command == "go":
-            print("i be goin")
+            print("(input.py) i be goin")
             if argument not in current_room.exits:
-                print("Location not available!")
+                print("(input.py) Location not available!")
                 continue
             else:
-                print("it worked!")
-                PLAYER.update_location(current_room, argument)
+                print("(input.py) it worked!")
+                MANAGER.update_location(argument)
                 break
-
-
-def play_scene(PLAYER: Player, current_room: Room) -> None:
-    for description in current_room.description:
-        print(description)
-    get_valid_input(PLAYER, current_room)
