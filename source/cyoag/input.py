@@ -5,7 +5,7 @@ from manager import MANAGER, Manager
 
 def get_valid_input(PLAYER: Player, current_room: Room) -> None:
     while True:
-        user_input: str = input(current_room.exit_choice)
+        user_input: str = input("> ")
         inputs: list[str] = user_input.split(" ")
 
         if inputs[0] not in ("take", "inspect", "go"):
@@ -31,11 +31,11 @@ def get_valid_input(PLAYER: Player, current_room: Room) -> None:
             break
 
         elif command == "go":
-            print("(input.py) i be goin")
+            print(f"(input.py) Checking if {argument} is a valid exit...")
             if argument not in current_room.exits:
-                print("(input.py) Location not available!")
+                print(f"(input.py) {argument} is not a valid exit!")
                 continue
             else:
-                print("(input.py) it worked!")
+                print(f"(input.py) {argument} is a valid exit.")
                 MANAGER.update_location(argument)
                 break

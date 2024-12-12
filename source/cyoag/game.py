@@ -5,7 +5,7 @@ from input import get_valid_input
 
 
 def initiate() -> None:
-    choice: str = input("Would you like to play, yes or no?\n")
+    choice: str = input("Would you like to play, yes or no?\n> ")
     if choice == "no":
         input("Press any button to quit.")
         exit()
@@ -18,7 +18,7 @@ def play_game() -> None:
 
     while game_running:
         current_room = MANAGER.location
-        print(f"(game.py) Moving to {current_room.name}")
+        print(f"(game.py) Set current location to: {current_room.name}")
         
         if current_room.name == "shrine":
             game_running = False
@@ -27,7 +27,7 @@ def play_game() -> None:
             MANAGER.play_scene(PLAYER, current_room)
             get_valid_input(PLAYER, current_room)
 
-    print("(game.py) Game over! you win?")
+    print("(game.py) YOU DIED")
 
 
 initiate()
