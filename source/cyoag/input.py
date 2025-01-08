@@ -1,11 +1,12 @@
 from player import Player
 from rooms import Room
 from manager import MANAGER, Manager
+import click
 
 
 def get_valid_input(PLAYER: Player, current_room: Room) -> None:
     while True:
-        user_input: str = input("> ")
+        user_input: str = input("")
         inputs: list[str] = user_input.split(" ")
 
         if inputs[0] not in ("take", "inspect", "go"):
@@ -31,11 +32,11 @@ def get_valid_input(PLAYER: Player, current_room: Room) -> None:
             break
 
         elif command == "go":
-            print(f"(input.py) Checking if {argument} is a valid exit...")
+            click.secho(f"(input.py) Checking if {argument} is a valid exit...", fg='red')
             if argument not in current_room.exits:
-                print(f"(input.py) {argument} is not a valid exit!")
+                click.secho(f"(input.py) {argument} is not a valid exit!", fg='red')
                 continue
             else:
-                print(f"(input.py) {argument} is a valid exit.")
+                click.secho(f"(input.py) {argument} is a valid exit.", fg='red')
                 MANAGER.update_location(argument)
                 break
