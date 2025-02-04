@@ -24,3 +24,5 @@ class Manager:
         click.secho(f"(manager.py) MANAGER.location successfully updated to: {exit}", fg='red')
 
 MANAGER: Manager = Manager()
+
+# create click templates
