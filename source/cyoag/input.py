@@ -6,13 +6,11 @@ import click
 
 def get_valid_input(PLAYER: Player, current_room: Room) -> None:
     while True:
-        user_input: str = input("")
+        user_input: str = click.prompt(click.style("What do you want to do?\n", fg='green'))
         inputs: list[str] = user_input.split(" ")
 
         if inputs[0] not in ("take", "inspect", "go"):
-            print(
-                "Invalid command. Please use 'take', 'inspect' or 'go'.\nTake and inspect not implemented."
-            )
+            print("Invalid command. Please use 'take', 'inspect' or 'go'.\nTake and inspect not fully implemented.")
             continue
 
         if len(inputs) < 2:
@@ -22,17 +20,20 @@ def get_valid_input(PLAYER: Player, current_room: Room) -> None:
         command, argument = inputs[0], inputs[1]
 
         if command == "take":
-            print("takin some shit")
-            # PLAYER.take(argument)
-            break
+            if argument not in current_room.items:
+                click.secho(f"(input.py) {argument} is not a valid item...", fg='red')
+                continue
+            else:
+                click.secho(f"(input.py) {argument} is a valid item...", fg='red')
+                click.secho(f"You take the {argument}!", fg='green')
+                continue
 
         elif command == "inspect":
-            print("inspectin some shit")
+            click.secho(f"(input.py) Checking if {argument} is a valid item...", fg='red')
             # PLAYER.inspect(argument)
-            break
+            continue
 
         elif command == "go":
-            click.secho(f"(input.py) Checking if {argument} is a valid exit...", fg='red')
             if argument not in current_room.exits:
                 click.secho(f"(input.py) {argument} is not a valid exit!", fg='red')
                 continue
@@ -40,3 +41,14 @@ def get_valid_input(PLAYER: Player, current_room: Room) -> None:
                 click.secho(f"(input.py) {argument} is a valid exit.", fg='red')
                 MANAGER.update_location(argument)
                 break
+
+
+def get_valid_choice(PLAYER: Player, current_room: Room) -> None:
+    while True:
+        user_input: str = click.prompt(click.style("choice?", fg='green'))
+        if user_input not in current_room.choice:
+            print("Invalid choice. Try again..")
+            continue
+        else:
+            print(f"You've got the {user_input}")
+            break

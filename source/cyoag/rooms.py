@@ -12,9 +12,10 @@ class Room(BaseModel):
     name: str
     id: int
     description: List[str]
-    choice: str
-    exit_choice: str
+    choice: List[str]
+    # exit_choice: str
     exits: List[str]
+    items: List[str]
 
 
 with open(json_path, "r") as file:
