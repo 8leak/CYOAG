@@ -5,19 +5,19 @@
         "description": [
             "Stumbling through the long grass across the open field and the sunbaked scrub whips at your bloodied legs.",
             "Metallic clanking at your hip. You snatch at your belt and strain to focus your eyes in the tangerine gloom..",
-            "You hold...\nthe blackiron [twistblade] lifted from that tavern sellsword?\na silver [timepiece]?\na string of rusted [ritebeads]?\n"
+            "You hold...\nthe blackiron [twistblade] lifted from that tavern sellsword?\na silver [ring]?\na string of rusted [ritebeads]?\n"
         ],
-        "choice": ["twistblade", "timepiece", "ritebeads"],
+        "choice": ["twistblade", "ring", "ritebeads"],
         "exits": ["dungeon","wizard tower","caravan"],
-        "items": ["blade", "timepiece", "beads"]
+        "items": {"blade":"An obisdian throatcutter", "ring":"So shiny you can see your face in it", "beads":"Praise be to he who reigns"}
     },
     {
         "name": "dungeon",
         "id": 1,
         "description": ["a stinky dinky dungey wungey", "Also, Will is a spark."],
-        "choice": ["dungeon choice"],
+        "choice": [""],
         "exits": ["city","shrine"],
-        "items": ["blade", "timepiece", "beads"]
+        "items": {"blade":"slksjdfsf", "timepiece":"sdkjfhkjhdf", "beads":"jfhjdhf"}
     },
     {
         "name": "wizard tower",
@@ -25,7 +25,7 @@
         "description": ["wiz tower description"],
         "choice": ["wiz tower choice"],
         "exits": ["dungeon", "wizard tower", "caravan"],
-        "items": ["blade", "timepiece", "beads"]
+        "items": {"blade":"slksjdfsf", "timepiece":"sdkjfhkjhdf", "beads":"jfhjdhf"}
     },
     {
         "name": "caravan",
@@ -33,7 +33,7 @@
         "description": ["caravan description"],
         "choice": ["caravan choice"],
         "exits": ["dungeon", "wizard tower", "caravan"],
-        "items": ["blade", "timepiece", "beads"]
+        "items": {"blade":"slksjdfsf", "timepiece":"sdkjfhkjhdf", "beads":"jfhjdhf"}
     },
     {
         "name": "city",
@@ -41,18 +41,14 @@
         "description": ["city description"],
         "choice": ["city choice"],
         "exits": ["dungeon", "wizard tower", "caravan"],
-        "items": ["blade", "timepiece", "beads"]
+        "items": {"blade":"slksjdfsf", "timepiece":"sdkjfhkjhdf", "beads":"jfhjdhf"}
     },
     {
         "name": "shrine",
         "id": 5,
         "description": ["shrine description"],
         "choice": ["shrine choice"],
-        "exit_choice": "shrine: Where do you go?\nDungeon\nWizard tower\nCaravan\n",
-        "exits": [
-            "dungeon",
-            "wizard tower",
-            "caravan"],
-        "items": ["blade", "timepiece", "beads"]
+        "exits": ["dungeon","wizard tower","caravan"],
+        "items": {"blade":"slksjdfsf", "timepiece":"sdkjfhkjhdf", "beads":"jfhjdhf"}
     }
 ]

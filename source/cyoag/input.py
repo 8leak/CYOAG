@@ -1,10 +1,10 @@
 from player import Player
 from rooms import Room
-from manager import MANAGER, Manager
+# from manager import MANAGER, Manager
 import click
 
 
-def get_valid_input(PLAYER: Player, current_room: Room) -> None:
+def get_valid_input(PLAYER: Player, current_room: Room, MANAGER) -> None:
     while True:
         user_input: str = click.prompt(click.style("What do you want to do?\n", fg='green'))
         inputs: list[str] = user_input.split(" ")
@@ -26,6 +26,7 @@ def get_valid_input(PLAYER: Player, current_room: Room) -> None:
             else:
                 click.secho(f"(input.py) {argument} is a valid item...", fg='red')
                 click.secho(f"You take the {argument}!", fg='green')
+                MANAGER.update_items(argument, PLAYER)
                 continue
 
         elif command == "inspect":

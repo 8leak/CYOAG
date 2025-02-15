@@ -13,9 +13,8 @@ class Room(BaseModel):
     id: int
     description: List[str]
     choice: List[str]
-    # exit_choice: str
     exits: List[str]
-    items: List[str]
+    items: dict
 
 
 with open(json_path, "r") as file:

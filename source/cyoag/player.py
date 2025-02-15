@@ -5,7 +5,7 @@ from rooms import ROOMS, Room
 
 class Player:
     def __init__(self) -> None:
-        self.items: List[str] = []
+        self.items: dict = {}
         self.location: str = "start"
     # updateItems()
 
