@@ -22,3 +22,5 @@ with open(json_path, "r") as file:
 
 
 ROOMS: Dict[str, Room] = {room.name: room for room in rooms_data}
+
+# item, choice models

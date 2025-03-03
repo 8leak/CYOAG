@@ -13,6 +13,7 @@ def initiate() -> None:
     else:
         play_game()
 
+
 @click.command()
 def play_game() -> None:
     game_running: bool = True
@@ -28,8 +29,6 @@ def play_game() -> None:
             click.secho("(game.py) current location is shrine, I should be quitting!", fg='red')
         else:
             MANAGER.play_scene(PLAYER, current_room)
-            # get_valid_choice(PLAYER, current_room)
-            # get_valid_input(PLAYER, current_room)
 
     click.secho("\nGAME OVER!\n", fg='bright_white', bold=True, underline=True)
 
