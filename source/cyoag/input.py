@@ -1,43 +1,42 @@
 from player import Player
 from rooms import Room
-# from manager import MANAGER, Manager
 import click
 
-def handle_go(PLAYER: Player, current_room: Room, exit: str, MANAGER) -> bool:
+def handle_go(player: Player, current_room: Room, exit: str, manager) -> bool:
     if exit not in current_room.exits:
         click.secho(f"(input.py) {exit} is not a valid exit!", fg='red')
         return False
     else:
         click.secho(f"(input.py) {exit} is a valid exit.", fg='red')
-        MANAGER.update_location(exit)
+        manager.update_location(exit)
         return True
     
-def handle_take(PLAYER: Player, current_room: Room, item: str, MANAGER) -> None:
+def handle_take(player: Player, current_room: Room, item: str, manager) -> None:
     if item not in current_room.items:
         click.secho(f"(input.py) {item} is not a valid item...", fg='red')
     else:
         click.secho(f"(input.py) {item} is a valid item...", fg='red')
         click.secho(f"You take the {item}!", fg='green')
-        MANAGER.update_items(item, PLAYER)
+        manager.update_items(current_room, item, player, "take")
 
-def handle_inspect(PLAYER: Player, current_room: Room, item: str) -> None:
-    if item not in current_room.items and item not in PLAYER.items:
+def handle_inspect(player: Player, current_room: Room, item: str) -> None:
+    if item not in current_room.items and item not in player.items:
         click.secho(f"(input.py) {item} is not a valid item...", fg='red')
     else:
         click.secho(f"(input.py) {item} is a valid item...", fg='red')
         click.secho(f"You inspect the {item}!", fg='green')
-        print(PLAYER.items[item])
+        print(player.items[item])
 
-def handle_drop(PLAYER: Player, current_room: Room, item: str, MANAGER) -> None:
-    if item not in PLAYER.items:
+def handle_drop(player: Player, current_room: Room, item: str, manager) -> None:
+    if item not in player.items:
         click.secho(f"(input.py) {item} is not a valid item...", fg='red')
     else:
         click.secho(f"(input.py) {item} is a valid item...", fg='red')
         click.secho(f"You drop the {item}!", fg='green')
-        current_room.items.update({item: PLAYER.items[item]})
-        PLAYER.items.pop(item)
+        manager.update_items(current_room, item, player, "drop")
 
-def get_valid_input(PLAYER: Player, current_room: Room, MANAGER) -> None:
+def get_valid_input(player: Player, current_room: Room, manager) -> None:
+    print(current_room.items["ring"])
     while True:
         user_input: str = click.prompt(click.style("What do you want to do?\n", fg='green'))
         inputs: list[str] = user_input.split(" ")
@@ -53,17 +52,17 @@ def get_valid_input(PLAYER: Player, current_room: Room, MANAGER) -> None:
         command, argument = inputs[0], inputs[1]
 
         if command == "take":
-            handle_take(PLAYER, current_room, argument, MANAGER)
+            handle_take(player, current_room, argument, manager)
         elif command == "inspect":
-            handle_inspect(PLAYER, current_room, argument)
+            handle_inspect(player, current_room, argument)
         elif command == "go":
-            if handle_go(PLAYER, current_room, argument, MANAGER):
+            if handle_go(player, current_room, argument, manager):
                 break
         elif command == "drop":
-            handle_drop(PLAYER, current_room, argument, MANAGER)
+            handle_drop(player, current_room, argument, manager)
 
 
-def get_valid_choice(PLAYER: Player, current_room: Room) -> None:
+def get_valid_choice(player: Player, current_room: Room) -> None:
     while True:
         user_input: str = click.prompt(click.style("choice?", fg='green'))
         if user_input not in current_room.choice:

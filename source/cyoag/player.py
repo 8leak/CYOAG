@@ -1,7 +1,15 @@
+from typing import Dict, List
+from item import Item
+from rooms import Room
+
 class Player:
     def __init__(self) -> None:
-        self.items: dict = {}
+        self.items: Dict[str, Item] = {}
         self.location: str = "start"
-    # updateItems()
+    def add_item(self, current_room: Room, item: str) -> None:
+        self.items[item] = current_room.items[item]
+    def drop_item(self, current_room, item: str) -> str:
+        dropped_item = self.items.pop(item)
+        return dropped_item
 
 player: Player = Player()

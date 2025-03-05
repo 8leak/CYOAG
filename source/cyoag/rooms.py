@@ -1,6 +1,7 @@
 import json
 import os
 from typing import Dict, List
+from item import items, Item
 
 from pydantic import BaseModel
 
@@ -14,13 +15,14 @@ class Room(BaseModel):
     description: List[str]
     choice: List[str]
     exits: List[str]
-    items: dict
+    item_list: List[str]
+    items: Dict[str, Item]
 
 
 with open(json_path, "r") as file:
     rooms_data: List[Room] = [Room(**room) for room in json.load(file)]
 
 
-ROOMS: Dict[str, Room] = {room.name: room for room in rooms_data}
-
-# item, choice models
+rooms: Dict[str, Room] = {room.name: room for room in rooms_data}
+for room in rooms.values():
+    room.items = {item: items[item] for item in room.item_list}
