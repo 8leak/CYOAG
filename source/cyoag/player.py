@@ -1,19 +1,15 @@
-from typing import List
-
-from rooms import ROOMS, Room
-
+from typing import Dict, List
+from item import Item
+from rooms import Room
 
 class Player:
     def __init__(self) -> None:
-        self.items: List[str] = []
+        self.items: Dict[str, Item] = {}
         self.location: str = "start"
+    def add_item(self, current_room: Room, item: str) -> None:
+        self.items[item] = current_room.items[item]
+    def drop_item(self, current_room, item: str) -> str:
+        dropped_item = self.items.pop(item)
+        return dropped_item
 
-    def update_location(self, current_room: Room, exit: str) -> None:
-        if exit not in current_room.exits:
-            print("I cannot find that exit!")
-        else:
-            print(f"Found room: {exit}")
-            PLAYER.location = exit
-
-
-PLAYER: Player = Player()
+player: Player = Player()
