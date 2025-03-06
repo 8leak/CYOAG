@@ -9,8 +9,6 @@ from item import Item, items
 def initiate() -> None:
     click.secho("Welcome to the game!\n", fg='bright_white', bold=True)
     
-    print(player.items)
-
     choice: str = click.prompt(click.style("Would you like to play, yes or no?\n", fg='green', bold=True))
     if choice == "no":
         input("Press any button to quit.")

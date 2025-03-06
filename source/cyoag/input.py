@@ -1,5 +1,7 @@
 from player import Player
 from rooms import Room
+from typing import Dict, List
+from item import Item
 import click
 
 def handle_go(player: Player, current_room: Room, exit: str, manager) -> bool:
@@ -22,10 +24,12 @@ def handle_take(player: Player, current_room: Room, item: str, manager) -> None:
 def handle_inspect(player: Player, current_room: Room, item: str) -> None:
     if item not in current_room.items and item not in player.items:
         click.secho(f"(input.py) {item} is not a valid item...", fg='red')
-    else:
+    elif item in player.items:
         click.secho(f"(input.py) {item} is a valid item...", fg='red')
         click.secho(f"You inspect the {item}!", fg='green')
-        print(player.items[item])
+        print(player.items[item].description)
+    elif item in current_room.items:
+        print(current_room.items[item].description)
 
 def handle_drop(player: Player, current_room: Room, item: str, manager) -> None:
     if item not in player.items:
@@ -35,21 +39,27 @@ def handle_drop(player: Player, current_room: Room, item: str, manager) -> None:
         click.secho(f"You drop the {item}!", fg='green')
         manager.update_items(current_room, item, player, "drop")
 
+def handle_inventory(player: Player) -> List[str]:
+    if len(player.items) >= 1:
+        for item in player.items:
+            print(f"- {item}\n")
+    else:
+        print("Your inventory is empty!")
+
 def get_valid_input(player: Player, current_room: Room, manager) -> None:
     print(current_room.items["ring"])
     while True:
         user_input: str = click.prompt(click.style("What do you want to do?\n", fg='green'))
         inputs: list[str] = user_input.split(" ")
 
-        if inputs[0] not in ("take", "inspect", "go", "drop"):
-            print("Invalid command. Please use 'take', 'inspect', 'go', or 'drop'.\nTake and inspect not fully implemented.")
+        if inputs[0] not in ("take", "inspect", "go", "drop", "inventory"):
+            print("Invalid command. Please use 'take', 'inspect', 'go', or 'drop'.")
             continue
 
         if len(inputs) < 2:
-            print(f"Missing argument. The {inputs[0]} command requires an argument.")
-            continue
-
-        command, argument = inputs[0], inputs[1]
+            command = inputs[0]
+        else:
+            command, argument = inputs[0], inputs[1]
 
         if command == "take":
             handle_take(player, current_room, argument, manager)
@@ -60,6 +70,8 @@ def get_valid_input(player: Player, current_room: Room, manager) -> None:
                 break
         elif command == "drop":
             handle_drop(player, current_room, argument, manager)
+        elif command == "inventory":
+            handle_inventory(player)
 
 
 def get_valid_choice(player: Player, current_room: Room) -> None:

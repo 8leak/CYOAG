@@ -36,22 +36,16 @@ class Manager:
     
 
     def update_items(self, current_room: Room, item: str, player, action: str) -> None:
-        # player.items.update({item: self.items[item]})
-        # click.secho(player.items[item], fg='bright_white', italic=True)
-
-        # self.items.pop(item)
-
-        # print("\nInventory:", *player.items, sep='\n')
-        # print("\nRemaining items:", *self.items, sep='\n')
-
         if action == "take":
             player.add_item(current_room, item)
             self.items.pop(item)
+
             print(f"Player items:\n{player.items}")
             print(f"Room items:\n{current_room.items}")
+
         elif action == "drop":
-            dropped_item = player.drop_item(current_room, item)
-            self.items[item] = dropped_item
+            self.items[item] = player.drop_item(current_room, item)
+            
             print(f"Player items:\n{player.items}")
             print(f"Room items:\n{current_room.items}")
             
