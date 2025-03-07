@@ -4,22 +4,25 @@
         "id": 0,
         "description": [
             "Stumbling through the long grass across the open field and the sunbaked scrub whips at your bloodied legs.",
-            "Metallic clanking at your hip. You snatch at your belt and strain to focus your eyes in the tangerine gloom..",
-            "You hold...\nthe blackiron [twistblade] lifted from that tavern sellsword?\na silver [ring]?\na string of rusted [ritebeads]?\n"
+            "Metallic clanking at your hip. You snatch at your belt and strain to focus your eyes in the tangerine gloom.."
         ],
         "choice": ["twistblade", "ring", "ritebeads"],
-        "exits": ["dungeon","wizard tower","caravan"],
+        "exits": ["dungeon", "wizard tower", "caravan"],
         "item_list": ["twistblade", "ring", "ritebeads"],
-        "items": {}
+        "items": {},
+        "choice_list": ["choice1"],
+        "choices": {}
     },
     {
         "name": "dungeon",
         "id": 1,
-        "description": ["a stinky dinky dungey wungey", "Also, Will is a spark."],
+        "description": ["Pig foul and lichen, hanging from the mouth like the tangled bristles of a hermit.", "Bending your knees to steady yourself on the dripslick stone, you clamber into the dark."],
         "choice": [""],
-        "exits": ["city","shrine"],
+        "exits": ["city","shrine", "start"],
         "item_list": [],
-        "items": {}
+        "items": {},
+        "choice_list": [],
+        "choices": {}
     },
     {
         "name": "wizard tower",
@@ -28,7 +31,9 @@
         "choice": ["wiz tower choice"],
         "exits": ["dungeon", "wizard tower", "caravan"],
         "item_list": [],
-        "items": {}
+        "items": {},
+        "choice_list": [],
+        "choices": {}
     },
     {
         "name": "caravan",
@@ -37,7 +42,9 @@
         "choice": ["caravan choice"],
         "exits": ["dungeon", "wizard tower", "caravan"],
         "item_list": [],
-        "items": {}
+        "items": {},
+        "choice_list": [],
+        "choices": {}
     },
     {
         "name": "city",
@@ -46,7 +53,9 @@
         "choice": ["city choice"],
         "exits": ["dungeon", "wizard tower", "caravan"],
         "item_list": [],
-        "items": {}
+        "items": {},
+        "choice_list": [],
+        "choices": {}
     },
     {
         "name": "shrine",
@@ -55,6 +64,8 @@
         "choice": ["shrine choice"],
         "exits": ["dungeon","wizard tower","caravan"],
         "item_list": [],
-        "items": {}
+        "items": {},
+        "choice_list": [],
+        "choices": {}
     }
 ]

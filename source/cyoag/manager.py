@@ -19,9 +19,10 @@ class Manager:
         print(*current_room.exits, sep="\n")
 
     def play_choice(self, player: Player, current_room: Room) -> None:
-        # if len(current_room.choice) > 1:
-        #     input.get_valid_choice(player, current_room)
-        pass
+        logging.info("Attempting to play choice.")
+        # todo: handle multiple choice events
+        if len(current_room.choice_list) == 1:
+            input.get_valid_choice(player, current_room)
 
     def play_scene(self, player: Player, current_room: Room) -> None:
         self.play_description(player, current_room)

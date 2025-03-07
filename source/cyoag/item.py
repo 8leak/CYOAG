@@ -19,5 +19,3 @@ with open(json_path, "r") as file:
 
 
 items: Dict[str, Item] = {items.name: items for items in items_data}
-
-# choice models

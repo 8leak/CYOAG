@@ -15,28 +15,31 @@ logging.basicConfig(
 
 @click.command()
 def initiate() -> None:
-    logging.info("Game initiated")
-    click.secho("Welcome to the game!\n", fg="bright_white", bold=True)
+    # logging.info("Game initiated")
+    # click.secho("Welcome to the game!\n", fg="bright_white", bold=True)
 
-    choice: str = click.prompt(
-        click.style("Would you like to play, yes or no?\n", fg="green", bold=True)
-    )
-    if choice == "no":
-        input("Press any key to quit.")
-        sys.exit()
-    else:
+    # choice: str = click.prompt(
+    #     click.style("Would you like to play, yes or no?\n", fg="green", bold=True)
+    # )
+    # if choice == "no":
+    #     input("Press any key to quit.")
+    #     sys.exit()
+    # else:
         play_game()
+
 
 
 @click.command()
 def play_game() -> None:
     game_running: bool = True
 
-    click.secho("Commands: go, take, inspect", fg="cyan")
+    # click.secho("Commands: go, take, inspect", fg="cyan")
 
     while game_running:
         current_room = manager.location
 
+        # print(current_room.choices["choice1"].outcomes)
+        
         if current_room.name == "shrine":
             game_running = False
         else:
@@ -46,7 +49,6 @@ def play_game() -> None:
     logging.info("Game closed")
 
 
-# hello()
 initiate()
 
 # TODO: Random element, enemy, item, stage?

@@ -3,6 +3,7 @@ import os
 from typing import Dict, List
 
 from item import Item, items
+from choice import Choice, choices
 from pydantic import BaseModel
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -17,6 +18,8 @@ class Room(BaseModel):
     exits: List[str]
     item_list: List[str]
     items: Dict[str, Item]
+    choice_list: List[str]
+    choices: Dict[str, Choice]
 
 
 with open(json_path, "r") as file:
@@ -26,3 +29,4 @@ with open(json_path, "r") as file:
 rooms: Dict[str, Room] = {room.name: room for room in rooms_data}
 for room in rooms.values():
     room.items = {item: items[item] for item in room.item_list}
+    room.choices = {choice: choices[choice] for choice in room.choice_list}

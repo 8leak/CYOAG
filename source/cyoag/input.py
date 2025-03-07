@@ -5,6 +5,7 @@ import click
 from item import Item
 from player import Player
 from rooms import Room
+from choice import Choice, Outcome
 
 
 def handle_go(player: Player, current_room: Room, exit: str, manager) -> bool:
@@ -102,12 +103,20 @@ def get_valid_input(player: Player, current_room: Room, manager) -> None:
 
 def get_valid_choice(player: Player, current_room: Room) -> None:
     while True:
+        event = current_room.choices["choice1"]
+        # print(event.description[0])
+        
+        # # for choice_name, choice in current_room.choices.items():
+        # #     click.secho(choice.description[0], fg="bright_white", italic=True)
+        
+        # logging.info(f"event.outcomes.keys: {event.outcomes.keys()}")
+        
         user_input: str = click.prompt(click.style("choice?", fg="green"))
-        if user_input not in current_room.choice:
-            logging.warning(f"Invalid choice: {user_input}")
-            print("Invalid choice. Try again..")
-            continue
+        
+        if user_input not in event.outcomes:
+            print("invalid choice!")
         else:
-            logging.info(f"Player made a choice: {user_input}")
-            print(f"You've got the {user_input}")
-            break
+            print("valid choice!")
+            
+            outcome = event.outcomes[user_input]
+            print(outcome.description[0])
