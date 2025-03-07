@@ -1,8 +1,8 @@
 import json
 import os
 from typing import Dict, List
-from item import items, Item
 
+from item import Item, items
 from pydantic import BaseModel
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
