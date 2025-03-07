@@ -18,7 +18,7 @@ class Choice(BaseModel):
     name: str
     id: int
     description: List[str]
-    outcomes: {str, Outcome}
+    outcomes: Dict[str, Outcome]
 
 
 with open(json_path, "r") as file:

@@ -6,13 +6,13 @@
         "outcomes": {
             "twistblade": {
                 "name": "twistblade",
-                "description": "A vulgar blade - blunt.",
+                "description": ["A vulgar blade - blunt."],
                 "command": "take",
                 "argument": "twistblade"
         },
             "ring": {
                 "name": "ring",
-                "description": "Inherited from Mr Bruce. Your index finger throbs faintly as the argent band throttles your finger bone.",
+                "description": ["Inherited from Mr Bruce. Your index finger throbs faintly as the argent band throttles your finger bone."],
                 "command": "take",
                 "argument": "ring"
             }
@@ -23,10 +23,18 @@
         "id": 1,
         "description": ["So shiny you can see your face in it"],
         "outcomes": {
-            "name": "",
-            "description": "",
-            "command": "",
-            "argument": ""
+            "twistblade": {
+                "name": "twistblade",
+                "description": ["A vulgar blade - blunt."],
+                "command": "take",
+                "argument": "twistblade"
+        },
+            "ring": {
+                "name": "ring",
+                "description": ["Inherited from Mr Bruce. Your index finger throbs faintly as the argent band throttles your finger bone."],
+                "command": "take",
+                "argument": "ring"
+            }
         }
     },
     {
@@ -34,10 +42,18 @@
         "id": 2,
         "description": ["Praise be to he who reigns"],
         "outcomes": {
-            "name": "",
-            "description": "",
-            "command": "",
-            "argument": ""
+            "twistblade": {
+                "name": "twistblade",
+                "description": ["A vulgar blade - blunt."],
+                "command": "take",
+                "argument": "twistblade"
+        },
+            "ring": {
+                "name": "ring",
+                "description": ["Inherited from Mr Bruce. Your index finger throbs faintly as the argent band throttles your finger bone."],
+                "command": "take",
+                "argument": "ring"
+            }
         }
     }
 ]

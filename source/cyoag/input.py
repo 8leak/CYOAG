@@ -104,19 +104,16 @@ def get_valid_input(player: Player, current_room: Room, manager) -> None:
 def get_valid_choice(player: Player, current_room: Room) -> None:
     while True:
         event = current_room.choices["choice1"]
-        # print(event.description[0])
-        
-        # # for choice_name, choice in current_room.choices.items():
-        # #     click.secho(choice.description[0], fg="bright_white", italic=True)
-        
-        # logging.info(f"event.outcomes.keys: {event.outcomes.keys()}")
-        
+        click.secho(event.description[0], fg="bright_white", italic=True)
+                
         user_input: str = click.prompt(click.style("choice?", fg="green"))
         
         if user_input not in event.outcomes:
             print("invalid choice!")
         else:
             print("valid choice!")
-            
             outcome = event.outcomes[user_input]
             print(outcome.description[0])
+            break
+
+            #TODO: choice handling, room memory, room mechanics

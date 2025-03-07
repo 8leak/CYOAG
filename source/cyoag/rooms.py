@@ -14,7 +14,6 @@ class Room(BaseModel):
     name: str
     id: int
     description: List[str]
-    choice: List[str]
     exits: List[str]
     item_list: List[str]
     items: Dict[str, Item]
