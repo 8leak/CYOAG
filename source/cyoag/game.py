@@ -43,7 +43,7 @@ def play_game() -> None:
         if current_room.name == "shrine":
             game_running = False
         else:
-            manager.play_scene(player, current_room)
+            manager.play_scene(player, current_room, manager)
 
     click.secho("\nGAME OVER!\n", fg="bright_white", bold=True, underline=True)
     logging.info("Game closed")

@@ -18,15 +18,15 @@ class Manager:
             click.secho(description, fg="bright_white", italic=True)
         print(*current_room.exits, sep="\n")
 
-    def play_choice(self, player: Player, current_room: Room) -> None:
+    def play_choice(self, player: Player, current_room: Room, manager) -> None:
         logging.info("Attempting to play choice.")
         # todo: handle multiple choice events
         if len(current_room.choice_list) == 1:
-            input.get_valid_choice(player, current_room)
+            input.get_valid_choice(player, current_room, manager)
 
-    def play_scene(self, player: Player, current_room: Room) -> None:
+    def play_scene(self, player: Player, current_room: Room, manager) -> None:
         self.play_description(player, current_room)
-        self.play_choice(player, current_room)
+        self.play_choice(player, current_room, manager)
         input.get_valid_input(player, current_room, manager)
 
     def update_location(self, exit: str) -> None:

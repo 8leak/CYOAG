@@ -88,20 +88,36 @@ def get_valid_input(player: Player, current_room: Room, manager) -> None:
             f"Player command: {command} {argument if len(inputs) > 1 else ''}"
         )
 
-        if command == "take":
+        handle_command(player, current_room, manager, command, argument)
+        # if command == "take":
+        #     handle_take(player, current_room, argument, manager)
+        # elif command == "inspect":
+        #     handle_inspect(player, current_room, argument)
+        # elif command == "go":
+        #     if handle_go(player, current_room, argument, manager):
+        #         break
+        # elif command == "drop":
+        #     handle_drop(player, current_room, argument, manager)
+        # elif command == "inventory":
+        #     handle_inventory(player)
+
+
+def handle_command(player, current_room, manager, command, argument):
+    if command == "take":
             handle_take(player, current_room, argument, manager)
-        elif command == "inspect":
-            handle_inspect(player, current_room, argument)
-        elif command == "go":
-            if handle_go(player, current_room, argument, manager):
-                break
-        elif command == "drop":
-            handle_drop(player, current_room, argument, manager)
-        elif command == "inventory":
-            handle_inventory(player)
+    elif command == "inspect":
+        handle_inspect(player, current_room, argument)
+    elif command == "go":
+        if handle_go(player, current_room, argument, manager):
+            pass
+    elif command == "drop":
+        handle_drop(player, current_room, argument, manager)
+    elif command == "inventory":
+        handle_inventory(player)
 
 
-def get_valid_choice(player: Player, current_room: Room) -> None:
+
+def get_valid_choice(player: Player, current_room: Room, manager) -> None:
     while True:
         event = current_room.choices["choice1"]
         click.secho(event.description[0], fg="bright_white", italic=True)
@@ -114,6 +130,9 @@ def get_valid_choice(player: Player, current_room: Room) -> None:
             print("valid choice!")
             outcome = event.outcomes[user_input]
             print(outcome.description[0])
+            command, argument = outcome.command, outcome.argument
+            handle_command(player, current_room, manager, command, argument)
+
             break
 
             #TODO: choice handling, room memory, room mechanics
