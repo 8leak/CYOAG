@@ -34,7 +34,7 @@ def handle_take(player: Player, current_room: Room, item: str, manager) -> None:
 
 def handle_drop(player: Player, current_room: Room, item: str, manager) -> None:
     if item not in player.items:
-        click.secho(f"({item} not in your inventory")
+        click.secho(f"{item} not in your inventory")
         logging.warning(f"Player tried to drop an item not in inventory: {item}")
     else:
         click.secho(f"You drop the {item}!", fg="green")
