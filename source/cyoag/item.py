@@ -13,10 +13,9 @@ class Item(BaseModel):
     id: int
     description: List[str]
 
+
 with open(json_path, "r") as file:
     items_data: List[Item] = [Item(**items) for items in json.load(file)]
 
 
 items: Dict[str, Item] = {items.name: items for items in items_data}
-
-# choice models

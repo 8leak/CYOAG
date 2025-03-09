@@ -1,0 +1,59 @@
+[
+    {
+        "name": "choice1",
+        "id": 0,
+        "description": ["You hold...\nthe blackiron [twistblade] lifted from that tavern sellsword?\na silver [ring]?\na string of rusted [ritebeads]?\n"],
+        "outcomes": {
+            "twistblade": {
+                "name": "twistblade",
+                "description": ["A vulgar blade - blunt."],
+                "command": "take",
+                "argument": "twistblade"
+        },
+            "ring": {
+                "name": "ring",
+                "description": ["Inherited from Mr Bruce. Your index finger throbs faintly as the argent band throttles your finger bone."],
+                "command": "take",
+                "argument": "ring"
+            }
+        }
+    },
+    {
+        "name": "choice2",
+        "id": 1,
+        "description": ["So shiny you can see your face in it"],
+        "outcomes": {
+            "twistblade": {
+                "name": "twistblade",
+                "description": ["A vulgar blade - blunt."],
+                "command": "take",
+                "argument": "twistblade"
+        },
+            "ring": {
+                "name": "ring",
+                "description": ["Inherited from Mr Bruce. Your index finger throbs faintly as the argent band throttles your finger bone."],
+                "command": "take",
+                "argument": "ring"
+            }
+        }
+    },
+    {
+        "name": "choice3",
+        "id": 2,
+        "description": ["Praise be to he who reigns"],
+        "outcomes": {
+            "twistblade": {
+                "name": "twistblade",
+                "description": ["A vulgar blade - blunt."],
+                "command": "take",
+                "argument": "twistblade"
+        },
+            "ring": {
+                "name": "ring",
+                "description": ["Inherited from Mr Bruce. Your index finger throbs faintly as the argent band throttles your finger bone."],
+                "command": "take",
+                "argument": "ring"
+            }
+        }
+    }
+]

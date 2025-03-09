@@ -1,55 +1,92 @@
+import logging
+from typing import Dict, List
+
+import click
+from item import Item
 from player import Player
 from rooms import Room
-import click
+from choice import Choice, Outcome
+
 
 def handle_go(player: Player, current_room: Room, exit: str, manager) -> bool:
     if exit not in current_room.exits:
-        click.secho(f"(input.py) {exit} is not a valid exit!", fg='red')
+        click.secho(f"Cannot find {exit}!", fg="green")
+        logging.warning(f"Player tried to go to an invalid exit: {exit}")
         return False
     else:
-        click.secho(f"(input.py) {exit} is a valid exit.", fg='red')
+        logging.info(f"Player found exit: {exit}")
         manager.update_location(exit)
         return True
-    
+
+
 def handle_take(player: Player, current_room: Room, item: str, manager) -> None:
     if item not in current_room.items:
-        click.secho(f"(input.py) {item} is not a valid item...", fg='red')
+        click.secho(f"You cannot find the {item}!", fg="green")
+        logging.warning(f"Player tried to take an invalid item: {item}")
     else:
-        click.secho(f"(input.py) {item} is a valid item...", fg='red')
-        click.secho(f"You take the {item}!", fg='green')
+        logging.info(f"Player found item: {item}")
         manager.update_items(current_room, item, player, "take")
+        click.secho(f"You take the {item}!", fg="green")
 
-def handle_inspect(player: Player, current_room: Room, item: str) -> None:
-    if item not in current_room.items and item not in player.items:
-        click.secho(f"(input.py) {item} is not a valid item...", fg='red')
-    else:
-        click.secho(f"(input.py) {item} is a valid item...", fg='red')
-        click.secho(f"You inspect the {item}!", fg='green')
-        print(player.items[item])
+        inventory_items = ", ".join(player.items.keys())
+        logging.info(f"Player's inventory after taking item: {inventory_items}")
+
 
 def handle_drop(player: Player, current_room: Room, item: str, manager) -> None:
     if item not in player.items:
-        click.secho(f"(input.py) {item} is not a valid item...", fg='red')
+        click.secho(f"{item} not in your inventory")
+        logging.warning(f"Player tried to drop an item not in inventory: {item}")
     else:
-        click.secho(f"(input.py) {item} is a valid item...", fg='red')
-        click.secho(f"You drop the {item}!", fg='green')
+        click.secho(f"You drop the {item}!", fg="green")
+        logging.info(f"Player dropped item: {item}")
         manager.update_items(current_room, item, player, "drop")
 
-def get_valid_input(player: Player, current_room: Room, manager) -> None:
-    print(current_room.items["ring"])
-    while True:
-        user_input: str = click.prompt(click.style("What do you want to do?\n", fg='green'))
-        inputs: list[str] = user_input.split(" ")
 
-        if inputs[0] not in ("take", "inspect", "go", "drop"):
-            print("Invalid command. Please use 'take', 'inspect', 'go', or 'drop'.\nTake and inspect not fully implemented.")
+def handle_inspect(player: Player, current_room: Room, item: str) -> None:
+    if item not in current_room.items and item not in player.items:
+        logging.debug(f"Player tried to inspect an invalid item: {item}")
+        click.secho(f"You can't find the {item} here.", fg="green")
+    elif item in player.items:
+        logging.info(f"Player inspected item in inventory: {item}")
+        print(player.items[item].description)
+    elif item in current_room.items:
+        logging.info(f"Player inspected item in room: {item}")
+        print(current_room.items[item].description)
+
+
+def handle_inventory(player: Player) -> List[str]:
+    if len(player.items) >= 1:
+        logging.info("Player checked inventory")
+        print("Inventory:")
+        for item in player.items:
+            print(f"- {item}")
+    else:
+        logging.info("Player checked inventory: empty")
+        print("Your inventory is empty!")
+
+
+def get_valid_input(player: Player, current_room: Room, manager) -> None:
+    while True:
+        user_input: str = click.prompt(
+            click.style("What do you want to do?\n", fg="green")
+        )
+        inputs: List[str] = user_input.split(" ")
+
+        if inputs[0] not in ("take", "inspect", "go", "drop", "inventory"):
+            logging.warning(f"Invalid command: {inputs[0]}")
+            print(
+                "Invalid command. Please use 'take', 'inspect', 'go', 'drop', or 'inventory'."
+            )
             continue
 
         if len(inputs) < 2:
-            print(f"Missing argument. The {inputs[0]} command requires an argument.")
-            continue
+            command = inputs[0]
+        else:
+            command, argument = inputs[0], inputs[1]
 
-        command, argument = inputs[0], inputs[1]
+        logging.debug(
+            f"Player command: {command} {argument if len(inputs) > 1 else ''}"
+        )
 
         if command == "take":
             handle_take(player, current_room, argument, manager)
@@ -60,14 +97,23 @@ def get_valid_input(player: Player, current_room: Room, manager) -> None:
                 break
         elif command == "drop":
             handle_drop(player, current_room, argument, manager)
+        elif command == "inventory":
+            handle_inventory(player)
 
 
 def get_valid_choice(player: Player, current_room: Room) -> None:
     while True:
-        user_input: str = click.prompt(click.style("choice?", fg='green'))
-        if user_input not in current_room.choice:
-            print("Invalid choice. Try again..")
-            continue
+        event = current_room.choices["choice1"]
+        click.secho(event.description[0], fg="bright_white", italic=True)
+                
+        user_input: str = click.prompt(click.style("choice?", fg="green"))
+        
+        if user_input not in event.outcomes:
+            print("invalid choice!")
         else:
-            print(f"You've got the {user_input}")
+            print("valid choice!")
+            outcome = event.outcomes[user_input]
+            print(outcome.description[0])
             break
+
+            #TODO: choice handling, room memory, room mechanics
