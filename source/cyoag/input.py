@@ -80,7 +80,7 @@ def get_valid_input(player: Player, current_room: Room, manager) -> None:
             continue
 
         if len(inputs) < 2:
-            command = inputs[0]
+            command, argument = inputs[0], None
         else:
             command, argument = inputs[0], inputs[1]
 
@@ -109,7 +109,7 @@ def handle_command(player, current_room, manager, command, argument):
         handle_inspect(player, current_room, argument)
     elif command == "go":
         if handle_go(player, current_room, argument, manager):
-            pass
+            False
     elif command == "drop":
         handle_drop(player, current_room, argument, manager)
     elif command == "inventory":
