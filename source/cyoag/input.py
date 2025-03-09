@@ -94,7 +94,7 @@ def get_valid_input(player: Player, current_room: Room, manager) -> None:
 
 def handle_command(player, current_room, manager, command, argument):
     if command == "take":
-            handle_take(player, current_room, argument, manager)
+        handle_take(player, current_room, argument, manager)
     elif command == "inspect":
         handle_inspect(player, current_room, argument)
     elif command == "go":
@@ -126,3 +126,4 @@ def get_valid_choice(player: Player, current_room: Room, manager) -> None:
             break
 
             #TODO: croom memory, room mechanics
+# merge main
