@@ -3,10 +3,8 @@ import sys
 
 import click
 from input import get_valid_choice, get_valid_input
-from item import Item, items
-from manager import Manager, manager
-from player import player
-from rooms import rooms
+from manager import Manager
+from player import Player
 
 logging.basicConfig(
     level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s"
@@ -32,6 +30,9 @@ def initiate() -> None:
 @click.command()
 def play_game() -> None:
     game_running: bool = True
+    player: Player = Player()
+    manager: Manager = Manager(player)
+    manager._load_data()
 
     # click.secho("Commands: go, take, inspect", fg="cyan")
 

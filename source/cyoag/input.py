@@ -2,13 +2,9 @@ import logging
 from typing import Dict, List
 
 import click
-from item import Item
-from player import Player
-from rooms import Room
-from choice import Choice, Outcome
+from data_models import Room
 
-
-def handle_go(player: Player, current_room: Room, exit: str, manager) -> bool:
+def handle_go(player, current_room: Room, exit: str, manager) -> bool:
     if exit not in current_room.exits:
         click.secho(f"Cannot find {exit}!", fg="green")
         logging.warning(f"Player tried to go to an invalid exit: {exit}")
@@ -19,7 +15,7 @@ def handle_go(player: Player, current_room: Room, exit: str, manager) -> bool:
         return True
 
 
-def handle_take(player: Player, current_room: Room, item: str, manager) -> None:
+def handle_take(player, current_room: Room, item: str, manager) -> None:
     if item not in current_room.items:
         click.secho(f"You cannot find the {item}!", fg="green")
         logging.warning(f"Player tried to take an invalid item: {item}")
@@ -32,7 +28,7 @@ def handle_take(player: Player, current_room: Room, item: str, manager) -> None:
         logging.info(f"Player's inventory after taking item: {inventory_items}")
 
 
-def handle_drop(player: Player, current_room: Room, item: str, manager) -> None:
+def handle_drop(player, current_room: Room, item: str, manager) -> None:
     if item not in player.items:
         click.secho(f"{item} not in your inventory")
         logging.warning(f"Player tried to drop an item not in inventory: {item}")
@@ -42,7 +38,7 @@ def handle_drop(player: Player, current_room: Room, item: str, manager) -> None:
         manager.update_items(current_room, item, player, "drop")
 
 
-def handle_inspect(player: Player, current_room: Room, item: str) -> None:
+def handle_inspect(player, current_room: Room, item: str) -> None:
     if item not in current_room.items and item not in player.items:
         logging.debug(f"Player tried to inspect an invalid item: {item}")
         click.secho(f"You can't find the {item} here.", fg="green")
@@ -54,7 +50,7 @@ def handle_inspect(player: Player, current_room: Room, item: str) -> None:
         print(current_room.items[item].description)
 
 
-def handle_inventory(player: Player) -> List[str]:
+def handle_inventory(player) -> List[str]:
     if len(player.items) >= 1:
         logging.info("Player checked inventory")
         print("Inventory:")
@@ -65,7 +61,7 @@ def handle_inventory(player: Player) -> List[str]:
         print("Your inventory is empty!")
 
 
-def get_valid_input(player: Player, current_room: Room, manager) -> None:
+def get_valid_input(player, current_room: Room, manager) -> None:
     while True:
         logging.info(f"Current room: {current_room.name}")
         user_input: str = click.prompt(
@@ -106,7 +102,7 @@ def handle_command(player, current_room, manager, command, argument):
         handle_inventory(player)
 
 
-def get_valid_choice(player: Player, current_room: Room, manager) -> None:
+def get_valid_choice(player, current_room: Room, manager) -> None:
     while True:
         event = current_room.choices["choice1"]
         #TODO: Feed in choice dynamically, reformat into Events
