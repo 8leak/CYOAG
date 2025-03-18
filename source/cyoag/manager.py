@@ -1,15 +1,13 @@
+import json
 import logging
-from typing import List
+from pathlib import Path
+from typing import Dict, List
+
 import click
 import input
-from typing import Dict, List
-from pydantic import BaseModel, ConfigDict
-
-from player import Player
 from data_models import Choice, Item, Room
+from player import Player
 
-import json
-from pathlib import Path
 
 class Manager:
     def __init__(self, player: Player) -> None:
@@ -17,48 +15,61 @@ class Manager:
         self.items: List[str]
         self.player: Player = player
         self.rooms: Dict[str, Room]
-    
+        self.running: bool = True
+
     def _load_data(self) -> None:
         current_dir = Path(__file__).resolve().parent
         json_path = current_dir / "data"
 
-        with open(json_path/"choices.json", "r") as file:
-            choices_data: List[Choice] = [Choice(**choices) for choices in json.load(file)]
-        choices_dict: Dict[str, Choice] = {choices.name: choices for choices in choices_data}
+        with open(json_path / "choices.json", "r") as file:
+            choices_data: List[Choice] = [
+                Choice(**choices) for choices in json.load(file)
+            ]
+        choices_dict: Dict[str, Choice] = {
+            choices.name: choices for choices in choices_data
+        }
 
-        with open(json_path/"items.json", "r") as file:
+        with open(json_path / "items.json", "r") as file:
             items_data: List[Item] = [Item(**items) for items in json.load(file)]
         items_dict: Dict[str, Item] = {items.name: items for items in items_data}
 
-        with open(json_path/"rooms.json", "r") as file:
+        with open(json_path / "rooms.json", "r") as file:
             rooms_data: List[Room] = [Room(**room) for room in json.load(file)]
 
         self.rooms: Dict[str, Room] = {room.name: room for room in rooms_data}
-        
+
         for room in self.rooms.values():
             room.items = {item: items_dict[item] for item in room.item_list}
             room.choices = {choice: choices_dict[choice] for choice in room.choice_list}
 
         self.location: Room = self.rooms["start"]
 
-    def start():
-        pass
+    def start(self) -> None:
+        while self.running:
+            if self.location.name == "shrine":
+                self.running = False
+            else:
+                self.play_scene()
 
-    def play_description(self, player: Player, current_room: Room) -> None:
-        for description in current_room.description:
+        click.secho("\nGAME OVER!\n", fg="bright_white", bold=True, underline=True)
+        logging.info("Game closed")
+
+    def play_description(self) -> None:
+        for description in self.location.description:
             click.secho(description, fg="bright_white", italic=True)
-        print(*current_room.exits, sep="\n")
+        print(*self.location.exits, sep="\n")
 
-    def play_choice(self, player: Player, current_room: Room, manager) -> None:
+    def play_choice(self) -> None:
         logging.info("Attempting to play choice.")
         # todo: handle multiple choice events
-        if len(current_room.choice_list) == 1:
-            input.get_valid_choice(player, current_room, manager)
+        if len(self.location.choice_list) == 1:
+            choice = "choice1"
+            input.get_valid_choice(self, choice)
 
-    def play_scene(self, player: Player, current_room: Room, manager) -> None:
-        self.play_description(player, current_room)
-        self.play_choice(player, current_room, manager)
-        input.get_valid_input(player, current_room, manager)
+    def play_scene(self) -> None:
+        self.play_description()
+        self.play_choice()
+        input.get_valid_input(self)
 
     def update_location(self, exit: str) -> None:
         logging.info(f"(manager.py) Updating manager.location to: {exit}")
@@ -66,10 +77,75 @@ class Manager:
         self.items = self.location.items
         logging.info(f"(manager.py) manager.location successfully updated to: {exit}")
 
-    def update_items(self, current_room: Room, item: str, player, action: str) -> None:
+    def update_items(self, item: str, action: str) -> None:
         if action == "take":
-            player.add_item(current_room, item)
+            self.player.add_item(self.location, item)
             self.location.items.pop(item)
 
         elif action == "drop":
-            self.location.items[item] = player.drop_item(current_room, item)
+            self.location.items[item] = self.player.drop_item(self.location, item)
+
+    def handle_go(self, exit: str) -> bool:
+        if exit not in self.location.exits:
+            click.secho(f"Cannot find {exit}!", fg="green")
+            logging.warning(f"Player tried to go to an invalid exit: {exit}")
+            return False
+        else:
+            logging.info(f"Player found exit: {exit}")
+            self.update_location(exit)
+            return True
+
+    def handle_take(self, item: str) -> None:
+        if item not in self.location.items:
+            click.secho(f"You cannot find the {item}!", fg="green")
+            logging.warning(f"Player tried to take an invalid item: {item}")
+        else:
+            logging.info(f"Player found item: {item}")
+            self.update_items(item, "take")
+            click.secho(f"You take the {item}!", fg="green")
+
+            inventory_items = ", ".join(self.player.items.keys())
+            logging.info(f"Player's inventory after taking item: {inventory_items}")
+
+    def handle_drop(self, item: str) -> None:
+        if item not in self.player.items:
+            click.secho(f"{item} not in your inventory")
+            logging.warning(f"Player tried to drop an item not in inventory: {item}")
+        else:
+            click.secho(f"You drop the {item}!", fg="green")
+            logging.info(f"Player dropped item: {item}")
+            self.update_items(item, "drop")
+
+    def handle_inspect(self, item: str) -> None:
+        if item not in self.location.items and item not in self.player.items:
+            logging.debug(f"Player tried to inspect an invalid item: {item}")
+            click.secho(f"You can't find the {item} here.", fg="green")
+        elif item in self.player.items:
+            logging.info(f"Player inspected item in inventory: {item}")
+            print(self.player.items[item].description)
+        elif item in self.location.items:
+            logging.info(f"Player inspected item in room: {item}")
+            print(self.location.items[item].description)
+
+    def handle_inventory(self) -> List[str]:
+        if len(self.player.items) >= 1:
+            logging.info("Player checked inventory")
+            print("Inventory:")
+            for item in self.player.items:
+                print(f"- {item}")
+        else:
+            logging.info("Player checked inventory: empty")
+            print("Your inventory is empty!")
+
+    def handle_command(self, command, argument):
+        if command == "take":
+            self.handle_take(argument)
+        elif command == "inspect":
+            self.handle_inspect(argument)
+        elif command == "go":
+            if self.handle_go(argument):
+                return True
+        elif command == "drop":
+            self.handle_drop(argument)
+        elif command == "inventory":
+            self.handle_inventory()

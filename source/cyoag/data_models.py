@@ -1,10 +1,13 @@
 from typing import Dict, List
+
 from pydantic import BaseModel, ConfigDict
+
 
 class Item(BaseModel):
     name: str
     id: int
     description: List[str]
+
 
 class Outcome(BaseModel):
     name: str
@@ -12,12 +15,14 @@ class Outcome(BaseModel):
     command: str
     argument: str
 
+
 class Choice(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True)
     name: str
     id: int
     description: List[str]
     outcomes: Dict[str, Outcome]
+
 
 class Room(BaseModel):
     name: str
