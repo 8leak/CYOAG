@@ -11,10 +11,10 @@ from player import Player
 
 class Manager:
     def __init__(self, player: Player) -> None:
-        self.location: Room = "room"
-        self.items: List[str]
+        self.location: Room = None
+        self.items: List[str] = []
         self.player: Player = player
-        self.rooms: Dict[str, Room]
+        self.rooms: Dict[str, Room] = {}
         self.running: bool = True
 
     def _load_data(self) -> None:
@@ -63,19 +63,13 @@ class Manager:
         logging.info("Attempting to play choice.")
         # todo: handle multiple choice events
         if len(self.location.choice_list) == 1:
-            choice = "choice1"
+            choice = self.location.choice_list[0]
             input.get_valid_choice(self, choice)
 
     def play_scene(self) -> None:
         self.play_description()
         self.play_choice()
         input.get_valid_input(self)
-
-    def update_location(self, exit: str) -> None:
-        logging.info(f"(manager.py) Updating manager.location to: {exit}")
-        self.location = self.rooms[exit]
-        self.items = self.location.items
-        logging.info(f"(manager.py) manager.location successfully updated to: {exit}")
 
     def update_items(self, item: str, action: str) -> None:
         if action == "take":
@@ -92,7 +86,10 @@ class Manager:
             return False
         else:
             logging.info(f"Player found exit: {exit}")
-            self.update_location(exit)
+            logging.info(f"(manager.py) Updating manager.location to: {exit}")
+            self.location = self.rooms[exit]
+            logging.info(f"(manager.py) manager.location successfully updated to: {exit}")
+
             return True
 
     def handle_take(self, item: str) -> None:
@@ -119,7 +116,7 @@ class Manager:
     def handle_inspect(self, item: str) -> None:
         if item not in self.location.items and item not in self.player.items:
             logging.debug(f"Player tried to inspect an invalid item: {item}")
-            click.secho(f"You can't find the {item} here.", fg="green")
+            click.secho(f"You can't find the {item} here.", fg="red")
         elif item in self.player.items:
             logging.info(f"Player inspected item in inventory: {item}")
             print(self.player.items[item].description)

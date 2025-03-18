@@ -1,8 +1,7 @@
 import logging
-from typing import Dict, List
+from typing import List
 
 import click
-from data_models import Room
 
 
 def get_valid_input(manager) -> None:
