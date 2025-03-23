@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import Dict, List
 
 import click
-import input
+from input import get_valid_choice, get_valid_input, Command
 from data_models import Choice, Item, Room
 from player import Player
 
@@ -64,12 +64,12 @@ class Manager:
         # todo: handle multiple choice events
         if len(self.location.choice_list) == 1:
             choice = self.location.choice_list[0]
-            input.get_valid_choice(self, choice)
+            get_valid_choice(self, choice)
 
     def play_scene(self) -> None:
         self.play_description()
         self.play_choice()
-        input.get_valid_input(self)
+        get_valid_input(self)
 
     def update_items(self, item: str, action: str) -> None:
         if action == "take":
@@ -134,15 +134,22 @@ class Manager:
             logging.info("Player checked inventory: empty")
             print("Your inventory is empty!")
 
+    def handle_help(self) -> None:
+        click.secho(f"commands: {', '.join([cmd.value for cmd in Command])}", fg="white")
+
+
     def handle_command(self, command, argument):
-        if command == "take":
+        if command == Command.TAKE:
             self.handle_take(argument)
-        elif command == "inspect":
+        elif command == Command.INSPECT:
             self.handle_inspect(argument)
-        elif command == "go":
+        elif command == Command.GO:
             if self.handle_go(argument):
                 return True
-        elif command == "drop":
+        elif command == Command.DROP:
             self.handle_drop(argument)
-        elif command == "inventory":
+        elif command == Command.INVENTORY:
             self.handle_inventory()
+        elif command == Command.HELP:
+            self.handle_help()
+

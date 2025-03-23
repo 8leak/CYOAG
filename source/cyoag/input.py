@@ -2,31 +2,46 @@ import logging
 from typing import List
 
 import click
+from enum import Enum
+
+class Command(Enum):
+    GO = "go"
+    TAKE = "take"
+    INSPECT = "inspect"
+    DROP = "drop"
+    INVENTORY = "inventory"
+    HELP = "help"
+
+INPUTS = {
+    "go": Command.GO,
+    "take": Command.TAKE,
+    "inspect": Command.INSPECT,
+    "look": Command.INSPECT,
+    "drop": Command.DROP,
+    "inventory": Command.INVENTORY,
+    "i": Command.INVENTORY,
+    "help": Command.HELP,
+    "commands": Command.HELP,
+}
 
 
 def get_valid_input(manager) -> None:
     while True:
         logging.info(f"Current room: {manager.location.name}")
+        
         user_input: str = click.prompt(
             click.style("What do you want to do?\n", fg="green")
         )
-        inputs: List[str] = user_input.split(" ")
+        
+        inputs: List[str] = user_input.lower().split()
 
-        if inputs[0] not in ("take", "inspect", "go", "drop", "inventory"):
-            logging.warning(f"Invalid command: {inputs[0]}")
-            print(
-                "Invalid command. Please use 'take', 'inspect', 'go', 'drop', or 'inventory'."
-            )
+        command = INPUTS.get(inputs[0]) 
+        
+        if command == None:
+            print(f"Invalid command: {inputs[0]}")
             continue
 
-        if len(inputs) < 2:
-            command, argument = inputs[0], None
-        else:
-            command, argument = inputs[0], inputs[1]
-
-        logging.debug(
-            f"Player command: {command} {argument if len(inputs) > 1 else ''}"
-        )
+        argument = inputs[1] if len(inputs) > 1 else None
 
         if manager.handle_command(command, argument):
             break
@@ -38,7 +53,7 @@ def get_valid_choice(manager, choice: str) -> None:
         # TODO: Feed in choice dynamically, reformat into Events
         click.secho(event.description[0], fg="bright_white", italic=True)
 
-        user_input: str = click.prompt(click.style("choice?", fg="green"))
+        user_input: str = click.prompt(click.style("Make your choice:", fg="green"))
 
         if user_input not in event.outcomes:
             print("invalid choice!")
