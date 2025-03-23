@@ -1,17 +1,20 @@
-import json
-import os
 from typing import Dict, List
 
 from pydantic import BaseModel, ConfigDict
 
-current_dir = os.path.dirname(os.path.abspath(__file__))
-json_path = os.path.join(current_dir, "data", "choices.json")
+
+class Item(BaseModel):
+    name: str
+    id: int
+    description: List[str]
+
 
 class Outcome(BaseModel):
     name: str
     description: List[str]
     command: str
     argument: str
+
 
 class Choice(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True)
@@ -21,8 +24,12 @@ class Choice(BaseModel):
     outcomes: Dict[str, Outcome]
 
 
-with open(json_path, "r") as file:
-    choices_data: List[Choice] = [Choice(**choices) for choices in json.load(file)]
-
-
-choices: Dict[str, Choice] = {choices.name: choices for choices in choices_data}
+class Room(BaseModel):
+    name: str
+    id: int
+    description: List[str]
+    exits: List[str]
+    item_list: List[str]
+    items: Dict[str, Item]
+    choice_list: List[str]
+    choices: Dict[str, Choice]

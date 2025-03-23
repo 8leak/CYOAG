@@ -1,7 +1,6 @@
-from typing import Dict, List
+from typing import Dict
 
-from item import Item
-from rooms import Room
+from data_models import Item, Room
 
 
 class Player:
@@ -14,6 +13,3 @@ class Player:
 
     def drop_item(self, current_room, item: str) -> Item:
         return self.items.pop(item)
-
-
-player: Player = Player()
