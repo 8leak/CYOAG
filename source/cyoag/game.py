@@ -21,4 +21,3 @@ play_game()
 
 # TODO: Random element, enemy, item, stage?
 # TODO: Loop? Locked in room until find key
-
