@@ -56,7 +56,7 @@ def get_valid_choice(manager, choice: str) -> None:
         click.secho(event.description[0], fg="bright_white", italic=True)
 
         user_input: str = click.prompt(
-            click.style("Make your choice:", fg="green")
+            click.style("Make your choice", fg="green")
         )
 
         if user_input not in event.outcomes:
@@ -65,7 +65,7 @@ def get_valid_choice(manager, choice: str) -> None:
             print("valid choice!")
             outcome = event.outcomes[user_input]
             print(outcome.description[0])
-            command, argument = outcome.command, outcome.argument
+            command, argument = INPUTS.get(outcome.command), outcome.argument
             manager.handle_command(command, argument)
 
             break

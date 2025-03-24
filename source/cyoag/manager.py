@@ -86,9 +86,7 @@ class Manager:
             self.location.items.pop(item)
 
         elif action == "drop":
-            self.location.items[item] = self.player.drop_item(
-                self.location, item
-            )
+            self.location.items[item] = self.player.drop_item(item)
 
     def handle_go(self, exit: str) -> bool:
         if exit not in self.location.exits:
@@ -160,7 +158,7 @@ class Manager:
     def handle_command(self, command, argument):
         if command == Command.TAKE:
             self.handle_take(argument)
-        elif command == Command.INSPECT:
+        elif command == Command.EXAMINE:
             self.handle_examine(argument)
         elif command == Command.GO:
             if self.handle_go(argument):
