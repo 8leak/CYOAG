@@ -1,6 +1,43 @@
+[tool.poetry]
+name = "cyoag"
+version = "0.1.0"
+description = "A text-based adventure game"
+authors = ["@8leak <8leak@example.com>"]
+packages = [{ include = "cyoag", from = "source" }]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+click = "^8.1.8"
+pydantic = "^2.10.6"
+
+[tool.poetry.scripts]
+play = "cyoag.game:play_game"
+
+[tool.poetry.group.dev.dependencies]
+black = "^25.1.0"
+isort = "^6.0.1"
+ruff = "^0.11.2"
+
+[tool.black]
+line-length = 79
+target-version = ["py310"]
+
 [tool.isort]
 profile = "black"
 known_first_party = ["cyoag"]
 src_paths = ["source"]
 line_length = 79
 skip_gitignore = true
+
+[tool.ruff]
+line-length = 79
+src = ["source"]
+select = ["E", "F", "B"]  # Error, pyflakes, bugbear
+ignore = ["E501"]  # Optional: ignore long lines if you're using black
+
+[tool.ruff.lint]
+preview = true  # Enables newer rules, optional
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

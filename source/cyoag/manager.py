@@ -4,8 +4,8 @@ from pathlib import Path
 from typing import Dict, List
 
 import click
-from input import get_valid_choice, get_valid_input, Command
 from data_models import Choice, Item, Room
+from input import Command, get_valid_choice, get_valid_input
 from player import Player
 
 
@@ -88,7 +88,9 @@ class Manager:
             logging.info(f"Player found exit: {exit}")
             logging.info(f"(manager.py) Updating manager.location to: {exit}")
             self.location = self.rooms[exit]
-            logging.info(f"(manager.py) manager.location successfully updated to: {exit}")
+            logging.info(
+                f"(manager.py) manager.location successfully updated to: {exit}"
+            )
 
             return True
 
@@ -135,8 +137,9 @@ class Manager:
             print("Your inventory is empty!")
 
     def handle_help(self) -> None:
-        click.secho(f"commands: {', '.join([cmd.value for cmd in Command])}", fg="white")
-
+        click.secho(
+            f"Commands: {', '.join([cmd.value for cmd in Command])}", fg="white"
+        )
 
     def handle_command(self, command, argument):
         if command == Command.TAKE:
@@ -152,4 +155,3 @@ class Manager:
             self.handle_inventory()
         elif command == Command.HELP:
             self.handle_help()
-

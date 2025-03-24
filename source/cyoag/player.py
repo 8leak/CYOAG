@@ -11,5 +11,5 @@ class Player:
     def add_item(self, current_room: Room, item: str) -> None:
         self.items[item] = current_room.items[item]
 
-    def drop_item(self, current_room, item: str) -> Item:
+    def drop_item(self, item: str) -> Item:
         return self.items.pop(item)

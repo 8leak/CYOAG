@@ -1,8 +1,9 @@
 import logging
+from enum import Enum
 from typing import List
 
 import click
-from enum import Enum
+
 
 class Command(Enum):
     GO = "go"
@@ -11,6 +12,7 @@ class Command(Enum):
     DROP = "drop"
     INVENTORY = "inventory"
     HELP = "help"
+
 
 INPUTS = {
     "go": Command.GO,
@@ -28,16 +30,16 @@ INPUTS = {
 def get_valid_input(manager) -> None:
     while True:
         logging.info(f"Current room: {manager.location.name}")
-        
+
         user_input: str = click.prompt(
             click.style("What do you want to do?\n", fg="green")
         )
-        
+
         inputs: List[str] = user_input.lower().split()
 
-        command = INPUTS.get(inputs[0]) 
-        
-        if command == None:
+        command = INPUTS.get(inputs[0])
+
+        if command is None:
             print(f"Invalid command: {inputs[0]}")
             continue
 
