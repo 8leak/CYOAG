@@ -3,12 +3,14 @@ import logging
 from pathlib import Path
 from typing import Dict, List
 
-import click
-
+from cyoag.theme import theme_1
 from cyoag.data_models import Choice, Item, Room
 from cyoag.input import Command, get_valid_choice, get_valid_input
 from cyoag.player import Player
 
+import click
+from rich.console import Console
+rich = Console(theme=theme_1)
 
 class Manager:
     def __init__(self, player: Player) -> None:
@@ -65,8 +67,8 @@ class Manager:
 
     def play_description(self) -> None:
         for description in self.location.description:
-            click.secho(description, fg="bright_white", italic=True)
-        print(*self.location.exits, sep="\n")
+            rich.print(description, style="narration")
+        print(*self.location.exits, sep=", ")
 
     def play_choice(self) -> None:
         logging.info("Attempting to play choice.")
@@ -110,7 +112,7 @@ class Manager:
         else:
             logging.info(f"Player found item: {item}")
             self.update_items(item, "take")
-            click.secho(f"You take the {item}!", fg="green")
+            rich.print(f"You take the {item}!", style="action")
 
             inventory_items = ", ".join(self.player.items.keys())
             logging.info(
@@ -134,10 +136,18 @@ class Manager:
             click.secho(f"You can't find the {item} here.", fg="red")
         elif item in self.player.items:
             logging.info(f"Player examined item in inventory: {item}")
-            click.secho(self.player.items[item].description[0], fg="bright_white", italic=True)
+            click.secho(
+                self.player.items[item].description[0],
+                fg="bright_white",
+                italic=True,
+            )
         elif item in self.location.items:
             logging.info(f"Player examined item in room: {item}")
-            click.secho(self.location.items[item].description[0], fg="bright_white", italic=True)
+            click.secho(
+                self.location.items[item].description[0],
+                fg="bright_white",
+                italic=True,
+            )
 
     def handle_inventory(self) -> List[str]:
         if len(self.player.items) >= 1:
