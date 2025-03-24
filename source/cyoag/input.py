@@ -8,7 +8,7 @@ import click
 class Command(Enum):
     GO = "go"
     TAKE = "take"
-    INSPECT = "inspect"
+    EXAMINE = "examine"
     DROP = "drop"
     INVENTORY = "inventory"
     HELP = "help"
@@ -17,8 +17,8 @@ class Command(Enum):
 INPUTS = {
     "go": Command.GO,
     "take": Command.TAKE,
-    "inspect": Command.INSPECT,
-    "look": Command.INSPECT,
+    "examine": Command.EXAMINE,
+    "look": Command.EXAMINE,
     "drop": Command.DROP,
     "inventory": Command.INVENTORY,
     "i": Command.INVENTORY,
@@ -55,7 +55,9 @@ def get_valid_choice(manager, choice: str) -> None:
         # TODO: Feed in choice dynamically, reformat into Events
         click.secho(event.description[0], fg="bright_white", italic=True)
 
-        user_input: str = click.prompt(click.style("Make your choice:", fg="green"))
+        user_input: str = click.prompt(
+            click.style("Make your choice:", fg="green")
+        )
 
         if user_input not in event.outcomes:
             print("invalid choice!")
