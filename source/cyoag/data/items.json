@@ -12,6 +12,16 @@
     {
         "name": "ritebeads",
         "id": 2,
-        "description": ["Praise be to he who reigns"]
+        "description": ["For praying with"]
+    },
+    {
+        "name": "bonedice",
+        "id": 3,
+        "description": ["Sunbleached ivory, from an elephant - probably"]
+    },
+    {
+        "name": "key",
+        "id": 4,
+        "description": ["Tarnished brass and hefty"]
     }
 ]
