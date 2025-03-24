@@ -1,6 +1,6 @@
 from typing import Dict
 
-from data_models import Item, Room
+from cyoag.data_models import Item, Room
 
 
 class Player:

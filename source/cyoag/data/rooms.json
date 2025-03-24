@@ -7,7 +7,7 @@
             "Metallic clanking at your hip. You snatch at your belt and strain to focus your eyes in the tangerine gloom.."
         ],
         "exits": ["dungeon", "wizard tower", "caravan"],
-        "item_list": ["twistblade", "ring", "ritebeads"],
+        "item_list": ["ring", "twistblade", "ritebeads", "bonedice", "key"],
         "items": {},
         "choice_list": ["choice1"],
         "choices": {}

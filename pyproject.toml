@@ -2,7 +2,7 @@
 name = "cyoag"
 version = "0.1.0"
 description = "A text-based adventure game"
-authors = ["@8leak <8leak@example.com>"]
+authors = ["8leak <8leak@example.com>"]
 packages = [{ include = "cyoag", from = "source" }]
 
 [tool.poetry.dependencies]
