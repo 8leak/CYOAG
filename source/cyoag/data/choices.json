@@ -2,7 +2,7 @@
     {
         "name": "choice1",
         "id": 0,
-        "description": ["You hold...\nthe blackiron twistblade lifted from that tavern sellsword?\na silver ring?\na string of rusted ritebeads?\n"],
+        "description": ["You hold...\nthe blackiron twistblade lifted from that tavern sellsword?\na silver ring?\na string of rusted ritebeads?"],
         "outcomes": {
             "twistblade": {
                 "name": "twistblade",

@@ -2,11 +2,13 @@ import logging
 from enum import Enum
 from typing import List
 
-import click
 from cyoag.theme import theme_1
 
 from rich.console import Console
 rich = Console(theme=theme_1)
+
+from blessed import Terminal
+blessed = Terminal()
 
 
 class Command(Enum):
@@ -35,7 +37,7 @@ def get_valid_input(manager) -> None:
     while True:
         logging.info(f"Current room: {manager.location.name}")
 
-        user_input: str = rich.input("[info]\nWhat do you want to do?\n[/]")
+        user_input: str = rich.input("\n>")
 
         inputs: List[str] = user_input.lower().split()
 
@@ -55,9 +57,9 @@ def get_valid_choice(manager, choice: str) -> None:
     while True:
         event = manager.location.choices[choice]
         # TODO: Feed in choice dynamically, reformat into Events
-        rich.print(f"[i bright_white]{event.description[0]}[/]")
+        rich.print(f"\n{event.description[0]}", style="narration")
 
-        user_input: str = rich.input("[info]Make your choice...\n[/]")
+        user_input: str = rich.input("\n>")
 
         if user_input not in event.outcomes:
             rich.print("invalid choice!")
