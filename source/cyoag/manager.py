@@ -4,9 +4,9 @@ from pathlib import Path
 from typing import Dict, List
 
 import click
-from data_models import Choice, Item, Room
-from input import Command, get_valid_choice, get_valid_input
-from player import Player
+from cyoag.data_models import Choice, Item, Room
+from cyoag.input import Command, get_valid_choice, get_valid_input
+from cyoag.player import Player
 
 
 class Manager:
@@ -115,15 +115,15 @@ class Manager:
             logging.info(f"Player dropped item: {item}")
             self.update_items(item, "drop")
 
-    def handle_inspect(self, item: str) -> None:
+    def handle_examine(self, item: str) -> None:
         if item not in self.location.items and item not in self.player.items:
-            logging.debug(f"Player tried to inspect an invalid item: {item}")
+            logging.debug(f"Player tried to examine an invalid item: {item}")
             click.secho(f"You can't find the {item} here.", fg="red")
         elif item in self.player.items:
-            logging.info(f"Player inspected item in inventory: {item}")
+            logging.info(f"Player examined item in inventory: {item}")
             print(self.player.items[item].description)
         elif item in self.location.items:
-            logging.info(f"Player inspected item in room: {item}")
+            logging.info(f"Player examined item in room: {item}")
             print(self.location.items[item].description)
 
     def handle_inventory(self) -> List[str]:
@@ -145,7 +145,7 @@ class Manager:
         if command == Command.TAKE:
             self.handle_take(argument)
         elif command == Command.INSPECT:
-            self.handle_inspect(argument)
+            self.handle_examine(argument)
         elif command == Command.GO:
             if self.handle_go(argument):
                 return True

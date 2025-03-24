@@ -1,8 +1,8 @@
 import logging
 
 import click
-from manager import Manager
-from player import Player
+from cyoag.manager import Manager
+from cyoag.player import Player
 
 logging.basicConfig(
     level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s"
@@ -17,7 +17,5 @@ def play_game() -> None:
     manager.start()
 
 
-play_game()
-
-# TODO: Random element, enemy, item, stage?
-# TODO: Loop? Locked in room until find key
+if __name__ == "__main__":
+    play_game()
