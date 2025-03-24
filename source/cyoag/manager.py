@@ -4,6 +4,7 @@ from pathlib import Path
 from typing import Dict, List
 
 import click
+
 from cyoag.data_models import Choice, Item, Room
 from cyoag.input import Command, get_valid_choice, get_valid_input
 from cyoag.player import Player
@@ -30,8 +31,12 @@ class Manager:
         }
 
         with open(json_path / "items.json", "r") as file:
-            items_data: List[Item] = [Item(**items) for items in json.load(file)]
-        items_dict: Dict[str, Item] = {items.name: items for items in items_data}
+            items_data: List[Item] = [
+                Item(**items) for items in json.load(file)
+            ]
+        items_dict: Dict[str, Item] = {
+            items.name: items for items in items_data
+        }
 
         with open(json_path / "rooms.json", "r") as file:
             rooms_data: List[Room] = [Room(**room) for room in json.load(file)]
@@ -40,7 +45,9 @@ class Manager:
 
         for room in self.rooms.values():
             room.items = {item: items_dict[item] for item in room.item_list}
-            room.choices = {choice: choices_dict[choice] for choice in room.choice_list}
+            room.choices = {
+                choice: choices_dict[choice] for choice in room.choice_list
+            }
 
         self.location: Room = self.rooms["start"]
 
@@ -51,7 +58,9 @@ class Manager:
             else:
                 self.play_scene()
 
-        click.secho("\nGAME OVER!\n", fg="bright_white", bold=True, underline=True)
+        click.secho(
+            "\nGAME OVER!\n", fg="bright_white", bold=True, underline=True
+        )
         logging.info("Game closed")
 
     def play_description(self) -> None:
@@ -77,7 +86,9 @@ class Manager:
             self.location.items.pop(item)
 
         elif action == "drop":
-            self.location.items[item] = self.player.drop_item(self.location, item)
+            self.location.items[item] = self.player.drop_item(
+                self.location, item
+            )
 
     def handle_go(self, exit: str) -> bool:
         if exit not in self.location.exits:
@@ -104,12 +115,16 @@ class Manager:
             click.secho(f"You take the {item}!", fg="green")
 
             inventory_items = ", ".join(self.player.items.keys())
-            logging.info(f"Player's inventory after taking item: {inventory_items}")
+            logging.info(
+                f"Player's inventory after taking item: {inventory_items}"
+            )
 
     def handle_drop(self, item: str) -> None:
         if item not in self.player.items:
             click.secho(f"{item} not in your inventory")
-            logging.warning(f"Player tried to drop an item not in inventory: {item}")
+            logging.warning(
+                f"Player tried to drop an item not in inventory: {item}"
+            )
         else:
             click.secho(f"You drop the {item}!", fg="green")
             logging.info(f"Player dropped item: {item}")
@@ -138,7 +153,8 @@ class Manager:
 
     def handle_help(self) -> None:
         click.secho(
-            f"Commands: {', '.join([cmd.value for cmd in Command])}", fg="white"
+            f"Commands: {', '.join([cmd.value for cmd in Command])}",
+            fg="white",
         )
 
     def handle_command(self, command, argument):

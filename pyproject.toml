@@ -12,6 +12,7 @@ pydantic = "^2.10.6"
 
 [tool.poetry.scripts]
 play = "cyoag.game:play_game"
+tidy = "cyoag.devtools:tidy"
 
 [tool.poetry.group.dev.dependencies]
 black = "^25.1.0"
@@ -29,13 +30,9 @@ src_paths = ["source"]
 line_length = 79
 skip_gitignore = true
 
-[tool.ruff]
-line-length = 79
-src = ["source"]
+[tool.ruff.lint]
 select = ["E", "F", "B"]  # Error, pyflakes, bugbear
 ignore = ["E501"]  # Optional: ignore long lines if you're using black
-
-[tool.ruff.lint]
 preview = true  # Enables newer rules, optional
 
 [build-system]

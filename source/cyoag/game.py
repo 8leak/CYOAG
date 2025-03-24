@@ -1,6 +1,7 @@
 import logging
 
 import click
+
 from cyoag.manager import Manager
 from cyoag.player import Player
 
