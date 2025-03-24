@@ -134,10 +134,10 @@ class Manager:
             click.secho(f"You can't find the {item} here.", fg="red")
         elif item in self.player.items:
             logging.info(f"Player examined item in inventory: {item}")
-            print(self.player.items[item].description[0])
+            click.secho(self.player.items[item].description[0], fg="bright_white", italic=True)
         elif item in self.location.items:
             logging.info(f"Player examined item in room: {item}")
-            print(self.location.items[item].description[0])
+            click.secho(self.location.items[item].description[0], fg="bright_white", italic=True)
 
     def handle_inventory(self) -> List[str]:
         if len(self.player.items) >= 1:
