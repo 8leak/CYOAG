@@ -3,7 +3,9 @@
         "name": "choice1",
         "id": 0,
         "description": [
-            "You hold...", "the blackiron twistblade lifted from that tavern sellsword?", "silver ring?", "string of rusted ritebeads?"
+            "You hold...the blackiron twistblade lifted from that tavern sellsword?",
+            "        ...a silver ring?",
+            "        ...your string of rusting ritebeads?"
         ],
         "outcomes": {
             "twistblade": {

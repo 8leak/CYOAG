@@ -1,5 +1,4 @@
 import logging
-import time
 from enum import Enum
 from typing import List
 
@@ -52,25 +51,15 @@ def get_valid_input(manager) -> None:
             break
 
 
-def get_valid_choice(manager, choice: str) -> None:
+def get_valid_choice(manager, event):
     while True:
-        event = manager.location.choices[choice]
-
-        # TODO: Feed in choice dynamically, reformat into Events
-
-        for description in event.description:
-            rich.print(description, style="narration")
-            time.sleep(0.1)
-
         user_input: str = rich.input("\n>")
 
         if user_input not in event.outcomes:
             rich.print("invalid choice!")
         else:
-            logging.info("valid choice![/]")
+            logging.info("valid choice!")
             outcome = event.outcomes[user_input]
             command, argument = INPUTS.get(outcome.command), outcome.argument
             manager.handle_command(command, argument)
-            rich.print(outcome.description[0], style="narration")
-
-            break
+            return outcome

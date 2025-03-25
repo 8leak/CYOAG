@@ -10,16 +10,17 @@ from rich.console import Console
 from cyoag.data_models import Choice, Item, Room
 from cyoag.input import Command, get_valid_choice, get_valid_input
 from cyoag.player import Player
-from cyoag.theme import theme_1
+from cyoag.theme import theme_1, Narrator
 
 rich = Console(theme=theme_1)
 
 
 class Manager:
-    def __init__(self, player: Player) -> None:
+    def __init__(self, player: Player, narrator: Narrator) -> None:
         self.location: Room = None
         self.items: List[str] = []
         self.player: Player = player
+        self.narrator: Narrator = narrator
         self.rooms: Dict[str, Room] = {}
         self.running: bool = True
 
@@ -56,7 +57,18 @@ class Manager:
 
         self.location: Room = self.rooms["start"]
 
+    def handle_narration(self, entity, style):
+        if type(entity) == str:
+            self.narrator.say(entity, style)
+            time.sleep(0.1)
+        
+        else:
+            for line in entity.description:
+                self.narrator.say(line, "narration")
+                time.sleep(0.1)
+
     def start(self) -> None:
+        self.handle_narration("\nCYOAG: Choose Your Own Adventure Game\n", "title")
         while self.running:
             if self.location.name == "shrine":
                 self.running = False
@@ -67,22 +79,28 @@ class Manager:
         logging.info("Game closed")
 
     def play_description(self) -> None:
-        for description in self.location.description:
-            rich.print(description, style="narration")
-            time.sleep(0.1)
+        self.handle_narration(self.location, "narration")
         print(*self.location.exits, sep=", ")
 
     def play_choice(self) -> None:
         logging.info("Attempting to play choice.")
-        # todo: handle multiple choice events
+
         if len(self.location.choice_list) == 1:
             choice = self.location.choice_list[0]
-            get_valid_choice(self, choice)
+            event = self.location.choices[choice]
+
+            rich.print()
+            self.handle_narration(event, "narration")
+
+            outcome = get_valid_choice(self, event)
+            self.handle_narration(outcome, "narration")
+        
 
     def play_scene(self) -> None:
         self.play_description()
         self.play_choice()
         get_valid_input(self)
+    
 
     def update_items(self, item: str, action: str) -> None:
         if action == "take":
@@ -95,7 +113,7 @@ class Manager:
     def handle_go(self, exit: str) -> bool:
         if exit not in self.location.exits:
             click.secho(f"Cannot find {exit}!", fg="green")
-            logging.warning(f"Player tried to go to an invalid exit: {exit}")
+            logging.info(f"Player tried to go to an invalid exit: {exit}")
             return False
         else:
             logging.info(f"Player found exit: {exit}")
@@ -109,8 +127,8 @@ class Manager:
 
     def handle_take(self, item: str) -> None:
         if item not in self.location.items:
-            click.secho(f"You cannot find the {item}!", fg="green")
-            logging.warning(f"Player tried to take an invalid item: {item}")
+            self.narrator.say(f"You cannot find the {item}!", "warning")
+            logging.info(f"Player tried to take an invalid item: {item}")
         else:
             logging.info(f"Player found item: {item}")
             self.update_items(item, "take")
@@ -124,7 +142,7 @@ class Manager:
     def handle_drop(self, item: str) -> None:
         if item not in self.player.items:
             click.secho(f"{item} not in your inventory")
-            logging.warning(
+            logging.info(
                 f"Player tried to drop an item not in inventory: {item}"
             )
         else:
