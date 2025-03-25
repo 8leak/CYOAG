@@ -4,13 +4,12 @@ import time
 from pathlib import Path
 from typing import Dict, List
 
-import click
 from rich.console import Console
 
 from cyoag.data_models import Choice, Item, Room
 from cyoag.input import Command, get_valid_choice, get_valid_input
 from cyoag.player import Player
-from cyoag.theme import theme_1, Narrator
+from cyoag.theme import Narrator, theme_1
 
 rich = Console(theme=theme_1)
 
@@ -57,25 +56,26 @@ class Manager:
 
         self.location: Room = self.rooms["start"]
 
-    def handle_narration(self, entity, style):
-        if type(entity) == str:
+    def handle_narration(self, entity, style: str):
+        if isinstance(entity, str):
             self.narrator.say(entity, style)
             time.sleep(0.1)
-        
         else:
             for line in entity.description:
-                self.narrator.say(line, "narration")
+                self.narrator.say(line, style)
                 time.sleep(0.1)
 
     def start(self) -> None:
-        self.handle_narration("\nCYOAG: Choose Your Own Adventure Game\n", "title")
+        self.handle_narration(
+            "\nCYOAG: Choose Your Own Adventure Game\n", "title"
+        )
         while self.running:
             if self.location.name == "shrine":
                 self.running = False
             else:
                 self.play_scene()
 
-        rich.print("\nGAME OVER!\n", style="narration")
+        self.handle_narration("\nGAME OVER!\n", "title")
         logging.info("Game closed")
 
     def play_description(self) -> None:
@@ -94,13 +94,11 @@ class Manager:
 
             outcome = get_valid_choice(self, event)
             self.handle_narration(outcome, "narration")
-        
 
     def play_scene(self) -> None:
         self.play_description()
         self.play_choice()
         get_valid_input(self)
-    
 
     def update_items(self, item: str, action: str) -> None:
         if action == "take":
@@ -112,7 +110,7 @@ class Manager:
 
     def handle_go(self, exit: str) -> bool:
         if exit not in self.location.exits:
-            click.secho(f"Cannot find {exit}!", fg="green")
+            self.handle_narration(f"Cannot find {exit}!", "action")
             logging.info(f"Player tried to go to an invalid exit: {exit}")
             return False
         else:
@@ -127,12 +125,12 @@ class Manager:
 
     def handle_take(self, item: str) -> None:
         if item not in self.location.items:
-            self.narrator.say(f"You cannot find the {item}!", "warning")
+            self.narrator.say(f"You cannot find the {item}!", "action")
             logging.info(f"Player tried to take an invalid item: {item}")
         else:
             logging.info(f"Player found item: {item}")
             self.update_items(item, "take")
-            rich.print(f"You take the {item}!", style="action")
+            self.handle_narration(f"You take the {item}!", "action")
 
             inventory_items = ", ".join(self.player.items.keys())
             logging.info(
@@ -141,48 +139,38 @@ class Manager:
 
     def handle_drop(self, item: str) -> None:
         if item not in self.player.items:
-            click.secho(f"{item} not in your inventory")
+            self.handle_narration(f"{item} not in your inventory", "action")
             logging.info(
                 f"Player tried to drop an item not in inventory: {item}"
             )
         else:
-            click.secho(f"You drop the {item}!", fg="green")
+            self.handle_narration(f"You drop the {item}!", "action")
             logging.info(f"Player dropped item: {item}")
             self.update_items(item, "drop")
 
     def handle_examine(self, item: str) -> None:
         if item not in self.location.items and item not in self.player.items:
             logging.debug(f"Player tried to examine an invalid item: {item}")
-            click.secho(f"You can't find the {item} here.", fg="red")
+            self.handle_narration(f"You can't find the {item} here.", "action")
         elif item in self.player.items:
             logging.info(f"Player examined item in inventory: {item}")
-            click.secho(
-                self.player.items[item].description[0],
-                fg="bright_white",
-                italic=True,
-            )
+            self.handle_narration(self.player.items[item], "action")
         elif item in self.location.items:
             logging.info(f"Player examined item in room: {item}")
-            click.secho(
-                self.location.items[item].description[0],
-                fg="bright_white",
-                italic=True,
-            )
+            self.handle_narration(self.location.items[item], "narration")
 
     def handle_inventory(self) -> List[str]:
         if len(self.player.items) >= 1:
             logging.info("Player checked inventory")
-            print("Inventory:")
             for item in self.player.items:
-                print(f"- {item}")
+                self.handle_narration(f"- {item}", "action")
         else:
-            logging.info("Player checked inventory: empty")
-            print("Your inventory is empty!")
+            logging.info("Player checked inventory:  empty")
+            self.handle_narration("Your inventory is empty!", "action")
 
     def handle_help(self) -> None:
-        click.secho(
-            f"Commands: {', '.join([cmd.value for cmd in Command])}",
-            fg="white",
+        self.handle_narration(
+            ", ".join([cmd.value for cmd in Command]), "action"
         )
 
     def handle_command(self, command, argument):
