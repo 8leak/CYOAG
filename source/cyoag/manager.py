@@ -1,16 +1,19 @@
 import json
 import logging
+import time
 from pathlib import Path
 from typing import Dict, List
 
-from cyoag.theme import theme_1
+import click
+from rich.console import Console
+
 from cyoag.data_models import Choice, Item, Room
 from cyoag.input import Command, get_valid_choice, get_valid_input
 from cyoag.player import Player
+from cyoag.theme import theme_1
 
-import click
-from rich.console import Console
 rich = Console(theme=theme_1)
+
 
 class Manager:
     def __init__(self, player: Player) -> None:
@@ -60,14 +63,13 @@ class Manager:
             else:
                 self.play_scene()
 
-        click.secho(
-            "\nGAME OVER!\n", fg="bright_white", bold=True, underline=True
-        )
+        rich.print("\nGAME OVER!\n", style="narration")
         logging.info("Game closed")
 
     def play_description(self) -> None:
         for description in self.location.description:
             rich.print(description, style="narration")
+            time.sleep(0.1)
         print(*self.location.exits, sep=", ")
 
     def play_choice(self) -> None:

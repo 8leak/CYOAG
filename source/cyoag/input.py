@@ -1,14 +1,13 @@
 import logging
+import time
 from enum import Enum
 from typing import List
 
+from rich.console import Console
+
 from cyoag.theme import theme_1
 
-from rich.console import Console
 rich = Console(theme=theme_1)
-
-from blessed import Terminal
-blessed = Terminal()
 
 
 class Command(Enum):
@@ -56,8 +55,12 @@ def get_valid_input(manager) -> None:
 def get_valid_choice(manager, choice: str) -> None:
     while True:
         event = manager.location.choices[choice]
+
         # TODO: Feed in choice dynamically, reformat into Events
-        rich.print(f"\n{event.description[0]}", style="narration")
+
+        for description in event.description:
+            rich.print(description, style="narration")
+            time.sleep(0.1)
 
         user_input: str = rich.input("\n>")
 
