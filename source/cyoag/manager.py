@@ -6,7 +6,7 @@ from typing import Dict, List
 
 from rich.console import Console
 
-from cyoag.data_models import Choice, Item, Room
+from cyoag.data_models import Event, Item, Room
 from cyoag.input import Command, get_valid_choice, get_valid_input
 from cyoag.player import Player
 from cyoag.theme import Narrator, theme_1
@@ -19,6 +19,7 @@ class Manager:
         self.location: Room = None
         self.items: List[str] = []
         self.player: Player = player
+        self.next_event: Event = None
         self.narrator: Narrator = narrator
         self.rooms: Dict[str, Room] = {}
         self.running: bool = True
@@ -27,12 +28,13 @@ class Manager:
         current_dir = Path(__file__).resolve().parent
         json_path = current_dir / "data"
 
-        with open(json_path / "choices.json", "r") as file:
-            choices_data: List[Choice] = [
-                Choice(**choices) for choices in json.load(file)
+        with open(json_path / "events.json", "r") as file:
+            events_data: List[Event] = [
+                Event(**events) for events in json.load(file)
             ]
-        choices_dict: Dict[str, Choice] = {
-            choices.name: choices for choices in choices_data
+
+        events_dict: Dict[str, Event] = {
+            events.name: events for events in events_data
         }
 
         with open(json_path / "items.json", "r") as file:
@@ -50,11 +52,16 @@ class Manager:
 
         for room in self.rooms.values():
             room.items = {item: items_dict[item] for item in room.item_list}
-            room.choices = {
-                choice: choices_dict[choice] for choice in room.choice_list
+            room.events = {
+                event: events_dict[event] for event in room.event_list
             }
 
         self.location: Room = self.rooms["start"]
+            
+    # def trigger_func_constructor(self, trigger_data):
+        
+
+
 
     def handle_narration(self, entity, style: str):
         if isinstance(entity, str):
@@ -82,12 +89,12 @@ class Manager:
         self.handle_narration(self.location, "narration")
         print(*self.location.exits, sep=", ")
 
-    def play_choice(self) -> None:
-        logging.info("Attempting to play choice.")
+    def play_event(self) -> None:
+        logging.info("Attempting to play event.")
 
-        if len(self.location.choice_list) == 1:
-            choice = self.location.choice_list[0]
-            event = self.location.choices[choice]
+        if len(self.location.event_list) == 1:
+            event = self.location.event_list[0]
+            event = self.location.events[event]
 
             rich.print()
             self.handle_narration(event, "narration")
@@ -96,9 +103,24 @@ class Manager:
             self.handle_narration(outcome, "narration")
 
     def play_scene(self) -> None:
+        # get_valid_choice(self)
         self.play_description()
-        self.play_choice()
         get_valid_input(self)
+
+    def handle_command(self, command, argument):
+        if command == Command.TAKE:
+            self.handle_take(argument)
+        elif command == Command.EXAMINE:
+            self.handle_examine(argument)
+        elif command == Command.GO:
+            if self.handle_go(argument):
+                return True
+        elif command == Command.DROP:
+            self.handle_drop(argument)
+        elif command == Command.INVENTORY:
+            self.handle_inventory()
+        elif command == Command.HELP:
+            self.handle_help()
 
     def update_items(self, item: str, action: str) -> None:
         if action == "take":
@@ -154,7 +176,7 @@ class Manager:
             self.handle_narration(f"You can't find the {item} here.", "action")
         elif item in self.player.items:
             logging.info(f"Player examined item in inventory: {item}")
-            self.handle_narration(self.player.items[item], "action")
+            self.handle_narration(self.player.items[item], "narration")
         elif item in self.location.items:
             logging.info(f"Player examined item in room: {item}")
             self.handle_narration(self.location.items[item], "narration")
@@ -172,18 +194,3 @@ class Manager:
         self.handle_narration(
             ", ".join([cmd.value for cmd in Command]), "action"
         )
-
-    def handle_command(self, command, argument):
-        if command == Command.TAKE:
-            self.handle_take(argument)
-        elif command == Command.EXAMINE:
-            self.handle_examine(argument)
-        elif command == Command.GO:
-            if self.handle_go(argument):
-                return True
-        elif command == Command.DROP:
-            self.handle_drop(argument)
-        elif command == Command.INVENTORY:
-            self.handle_inventory()
-        elif command == Command.HELP:
-            self.handle_help()

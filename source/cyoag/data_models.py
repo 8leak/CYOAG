@@ -1,4 +1,4 @@
-from typing import Dict, List
+from typing import Dict, List, Optional, Callable
 
 from pydantic import BaseModel, ConfigDict
 
@@ -16,10 +16,14 @@ class Outcome(BaseModel):
     argument: str
 
 
-class Choice(BaseModel):
+class Event(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True)
     name: str
     id: int
+    trigger: Dict[str, str]
+    trigger_func: Optional[Callable] = None
+    repeatable: bool
+    played: bool
     description: List[str]
     outcomes: Dict[str, Outcome]
 
@@ -31,5 +35,5 @@ class Room(BaseModel):
     exits: List[str]
     item_list: List[str]
     items: Dict[str, Item]
-    choice_list: List[str]
-    choices: Dict[str, Choice]
+    event_list: List[str]
+    events: Dict[str, Event]
