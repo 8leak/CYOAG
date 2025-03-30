@@ -1,6 +1,12 @@
+# pyright: strict
+
 import logging
 from enum import Enum
-from typing import List
+from typing import List, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from cyoag.manager import Manager
+    from cyoag.data_models import Event
 
 from rich.console import Console
 
@@ -31,7 +37,7 @@ INPUTS = {
 }
 
 
-def get_valid_input(manager) -> None:
+def get_valid_input(manager: "Manager") -> None:
     while True:
         logging.info(f"Current room: {manager.location.name}")
 
@@ -51,7 +57,7 @@ def get_valid_input(manager) -> None:
             break
 
 
-def get_valid_choice(manager, event):
+def get_valid_choice(manager: "Manager", event: "Event"):
     while True:
         user_input: str = rich.input("\n>")
 
@@ -63,3 +69,4 @@ def get_valid_choice(manager, event):
             command, argument = INPUTS.get(outcome.command), outcome.argument
             manager.handle_command(command, argument)
             return outcome
+

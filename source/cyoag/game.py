@@ -1,3 +1,5 @@
+# pyright: standard
+
 import logging
 
 import click
@@ -8,8 +10,8 @@ from cyoag.theme import Narrator, theme_1
 
 
 @click.command()
-@click.option("--log-level", default="info")
-def play_game(log_level) -> None:
+@click.option("--log-level", default="warning")
+def play_game(log_level: str) -> None:
 
     log_level = getattr(logging, log_level.upper())
     logging.basicConfig(
@@ -19,7 +21,7 @@ def play_game(log_level) -> None:
     player: Player = Player()
     narrator: Narrator = Narrator(theme_1)
     manager: Manager = Manager(player, narrator)
-    manager._load_data()
+    # manager._load_data()
     manager.start()
 
 

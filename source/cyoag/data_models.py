@@ -1,4 +1,9 @@
-from typing import Dict, List, Optional, Callable
+# pyright: standard
+
+from typing import Dict, List, Optional, Callable, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from cyoag.manager import Manager
 
 from pydantic import BaseModel, ConfigDict
 
@@ -21,9 +26,9 @@ class Event(BaseModel):
     name: str
     id: int
     trigger: Dict[str, str]
-    trigger_func: Optional[Callable] = None
+    trigger_func: Optional[Callable[["Manager"], bool]] = None
     repeatable: bool
-    played: bool
+    played: bool = False
     description: List[str]
     outcomes: Dict[str, Outcome]
 
