@@ -26,5 +26,29 @@
                 "argument": "ring"
             }
         }
+    },
+    {
+        "name": "event2",
+        "id": 1,
+        "trigger": {"type": "room_status", "room": "start", "status": "exited"},
+        "repeatable": false,
+        "played": false,
+        "description": [
+            "Event2 descriptionssss."
+        ],
+        "outcomes": {
+            "twistblade": {
+                "name": "twistblade",
+                "description": ["A vulgar blade - blunt."],
+                "command": "take",
+                "argument": "twistblade"
+        },
+            "ring": {
+                "name": "ring",
+                "description": ["Inherited from Mr Bruce. Your index finger throbs faintly as the argent band throttles your finger bone."],
+                "command": "take",
+                "argument": "ring"
+            }
+        }
     }
 ]

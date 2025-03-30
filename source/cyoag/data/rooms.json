@@ -13,11 +13,11 @@
     {
         "name": "dungeon",
         "id": 1,
-        "description": ["Pig foul and lichen, hanging from the mouth like the tangled bristles of a hermit.", "Bending your knees to steady yourself on the dripslick stone, you clamber into the dark."],
+        "description": ["Pig foul and lichen hanging from the mouth like the tangled bristles of a hermit.", "Bending your knees to steady yourself on the dripslick stone, you clamber into the dark."],
         "exits": ["city","shrine", "start"],
         "item_list": [],
         "items": {},
-        "event_list": [],
+        "event_list": ["event1"],
         "events": {}
     },
     {

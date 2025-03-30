@@ -1,3 +1,4 @@
+## pyright: strict
 import json
 import logging
 import time
@@ -23,7 +24,17 @@ class Manager:
         self.narrator: Narrator = narrator
         self.rooms: Dict[str, Room] = {}
         self.running: bool = True
+        self.status: str = None
 
+    def trigger_func_constructor(self, trigger_data):
+        type = trigger_data.get("type")
+        
+        if type == "room_status":
+            room = trigger_data.get("room")
+            status = trigger_data.get("status")
+
+            return lambda manager : manager.location.name == room and manager.status == status
+    
     def _load_data(self) -> None:
         current_dir = Path(__file__).resolve().parent
         json_path = current_dir / "data"
@@ -32,6 +43,8 @@ class Manager:
             events_data: List[Event] = [
                 Event(**events) for events in json.load(file)
             ]
+        for event in events_data:
+            event.trigger_func = self.trigger_func_constructor(event.trigger)
 
         events_dict: Dict[str, Event] = {
             events.name: events for events in events_data
@@ -57,12 +70,8 @@ class Manager:
             }
 
         self.location: Room = self.rooms["start"]
+        self.next_event: Event = self.location.events.get("event1")
             
-    # def trigger_func_constructor(self, trigger_data):
-        
-
-
-
     def handle_narration(self, entity, style: str):
         if isinstance(entity, str):
             self.narrator.say(entity, style)
@@ -92,18 +101,22 @@ class Manager:
     def play_event(self) -> None:
         logging.info("Attempting to play event.")
 
-        if len(self.location.event_list) == 1:
-            event = self.location.event_list[0]
-            event = self.location.events[event]
+        rich.print()
+        self.handle_narration(self.next_event, "narration")
 
-            rich.print()
-            self.handle_narration(event, "narration")
-
-            outcome = get_valid_choice(self, event)
-            self.handle_narration(outcome, "narration")
+        outcome = get_valid_choice(self, self.next_event)
+        self.handle_narration(outcome, "narration")
+        
+        if not self.next_event.repeatable:
+            self.next_event.played = True
+            self.next_event = None
+        else:
+            self.next_event = self.next_event.next_event
 
     def play_scene(self) -> None:
-        # get_valid_choice(self)
+        if self.next_event and not self.next_event.played:
+            self.play_event()
+
         self.play_description()
         get_valid_input(self)
 
@@ -139,6 +152,7 @@ class Manager:
             logging.info(f"Player found exit: {exit}")
             logging.info(f"(manager.py) Updating manager.location to: {exit}")
             self.location = self.rooms[exit]
+            self.status = "entered"
             logging.info(
                 f"(manager.py) manager.location successfully updated to: {exit}"
             )

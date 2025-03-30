@@ -34,7 +34,6 @@ INPUTS = {
 def get_valid_input(manager) -> None:
     while True:
         logging.info(f"Current room: {manager.location.name}")
-        # check in room events for triggered events then play it
 
         user_input: str = rich.input("\n>")
 
