@@ -11,6 +11,7 @@ from cyoag.data_models import Event, Item, Room
 from cyoag.input import Command, get_valid_choice, get_valid_input
 from cyoag.player import Player
 from cyoag.theme import Narrator, theme_1
+from cyoag.data_loader import DataLoader
 
 logger = logging.getLogger(__name__)
 
@@ -19,7 +20,8 @@ rich = Console(theme=theme_1)
 
 
 class Manager:
-    def __init__(self, player: Player, narrator: Narrator) -> None:
+    def __init__(self, player: Player, narrator: Narrator, data_loader: DataLoader) -> None:
+        self.data_loader: DataLoader = data_loader
         self.location: Optional[Room] = None
         self.player: Player = player
         self.next_event: Optional[Event] = None
@@ -28,48 +30,9 @@ class Manager:
         self.running: bool = True
         self.status: Optional[str] = ""
 
-    def trigger_func_constructor(self, trigger_data: Dict[str, str]):
-        trigger_type = trigger_data.get("type")
-
-        if trigger_type == "room_status":
-            trigger_room: Optional[str] = trigger_data.get("room")
-            trigger_status: Optional[str] = trigger_data.get("status")
-
-            if trigger_room is None or trigger_status is None:
-                raise ValueError(
-                    "Missing required keys in trigger_data: 'room' and 'status'"
-                )
-
-            return (
-                lambda manager: manager.location.name == trigger_room
-                and manager.status == trigger_status
-            )
-
     def _load_data(self) -> None:
-        current_dir = Path(__file__).resolve().parent
-        json_path = current_dir / "data"
-        data_dicts = {}
-        data_map = {"events": Event, "items": Item, "rooms": Room}
-
-        for filename, class_type in data_map.items():
-            with open(json_path / f"{filename}.json", "r") as file:
-                data = [class_type(**items) for items in json.load(file)]
-                data_dicts.update(
-                    {filename: {item.name: item for item in data}}
-                )
-
-        for event in data_dicts["events"].values():
-            event.trigger_func = self.trigger_func_constructor(event.trigger)
-
-        for room in data_dicts["rooms"].values():
-            room.items = {
-                item: data_dicts["items"][item] for item in room.item_list
-            }
-            room.events = {
-                event: data_dicts["events"][event] for event in room.event_list
-            }
-
-        self.rooms_dict = data_dicts["rooms"]
+        game_data = self.data_loader.load_data()
+        self.rooms_dict = game_data["rooms"]
         self.location = self.rooms_dict["start"]
         self.next_event = self.location.events.get("event1")
 

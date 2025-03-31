@@ -7,6 +7,7 @@ import click
 from cyoag.manager import Manager
 from cyoag.player import Player
 from cyoag.theme import Narrator, theme_1
+from cyoag.data_loader import DataLoader
 
 
 @click.command()
@@ -20,7 +21,8 @@ def play_game(log_level: str) -> None:
 
     player: Player = Player()
     narrator: Narrator = Narrator(theme_1)
-    manager: Manager = Manager(player, narrator)
+    data_loader: DataLoader = DataLoader()
+    manager: Manager = Manager(player, narrator, data_loader)
     manager.start()
 
 
