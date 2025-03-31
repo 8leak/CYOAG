@@ -1,6 +1,6 @@
 # pyright: standard
 
-from typing import Dict, List, Optional, Callable, TYPE_CHECKING
+from typing import TYPE_CHECKING, Callable, Dict, List, Optional
 
 if TYPE_CHECKING:
     from cyoag.manager import Manager

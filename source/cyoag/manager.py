@@ -1,13 +1,11 @@
 # pyright: standard
-from argparse import ArgumentDefaultsHelpFormatter
 import json
 import logging
 import time
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict, Optional
 
 from rich.console import Console
-from rich.panel import Panel
 
 from cyoag.data_models import Event, Item, Room
 from cyoag.input import Command, get_valid_choice, get_valid_input
@@ -30,38 +28,43 @@ class Manager:
         self.running: bool = True
         self.status: Optional[str] = ""
 
-    def trigger_func_constructor(self, trigger_data: Dict[str,str]):
+    def trigger_func_constructor(self, trigger_data: Dict[str, str]):
         trigger_type = trigger_data.get("type")
-        
+
         if trigger_type == "room_status":
             trigger_room: Optional[str] = trigger_data.get("room")
             trigger_status: Optional[str] = trigger_data.get("status")
-            
-            if trigger_room is None or trigger_status is None:
-                raise ValueError("Missing required keys in trigger_data: 'room' and 'status'")
 
-            return lambda manager : manager.location.name == trigger_room and manager.status == trigger_status
-    
+            if trigger_room is None or trigger_status is None:
+                raise ValueError(
+                    "Missing required keys in trigger_data: 'room' and 'status'"
+                )
+
+            return (
+                lambda manager: manager.location.name == trigger_room
+                and manager.status == trigger_status
+            )
+
     def _load_data(self) -> None:
         current_dir = Path(__file__).resolve().parent
         json_path = current_dir / "data"
-        data_dicts = {} 
-        data_map = {
-            "events": Event,
-            "items": Item,
-            "rooms": Room
-        }
+        data_dicts = {}
+        data_map = {"events": Event, "items": Item, "rooms": Room}
 
         for filename, class_type in data_map.items():
             with open(json_path / f"{filename}.json", "r") as file:
                 data = [class_type(**items) for items in json.load(file)]
-                data_dicts.update({filename: {item.name: item for item in data}})
+                data_dicts.update(
+                    {filename: {item.name: item for item in data}}
+                )
 
         for event in data_dicts["events"].values():
             event.trigger_func = self.trigger_func_constructor(event.trigger)
 
         for room in data_dicts["rooms"].values():
-            room.items = {item: data_dicts["items"][item] for item in room.item_list}
+            room.items = {
+                item: data_dicts["items"][item] for item in room.item_list
+            }
             room.events = {
                 event: data_dicts["events"][event] for event in room.event_list
             }
@@ -69,7 +72,7 @@ class Manager:
         self.rooms_dict = data_dicts["rooms"]
         self.location = self.rooms_dict["start"]
         self.next_event = self.location.events.get("event1")
-            
+
     def handle_narration(self, entity, style: str):
         if isinstance(entity, str):
             self.narrator.say(entity, style)
@@ -78,13 +81,15 @@ class Manager:
             for line in entity.description:
                 self.narrator.say(line, style)
                 time.sleep(0.1)
-    
+
     def require_data(self, value):
         if value is None:
             raise RuntimeError(f"{value} cannot be None")
         return value
-    
-    def ensure_argument(self, command: str, argument: Optional[str]) -> str | None:
+
+    def ensure_argument(
+        self, command: str, argument: Optional[str]
+    ) -> str | None:
         if not argument:
             self.handle_narration(f"{command} requires an argument.", "action")
             return None
@@ -97,7 +102,7 @@ class Manager:
         )
 
         while self.running:
-            if self.location is  None:
+            if self.location is None:
                 raise RuntimeError("self.location must not be None.")
             if self.location.name == "shrine":
                 self.running = False
@@ -114,8 +119,10 @@ class Manager:
 
     def play_event(self) -> None:
         if self.next_event is None:
-            raise RuntimeError("next_event must be set before calling play_event()")
-        
+            raise RuntimeError(
+                "next_event must be set before calling play_event()"
+            )
+
         current_event = self.require_data(self.next_event)
         current_location = self.require_data(self.location)
 
@@ -126,13 +133,15 @@ class Manager:
 
         outcome = get_valid_choice(self, current_event)
         self.handle_narration(outcome, "narration")
-        
-        #todo: check logic, move to EventsManager? set from current_location.next_event?
+
+        # todo: check logic, move to EventsManager? set from current_location.next_event?
         if not current_event.repeatable:
             current_event.played = True
             self.next_event = None
         elif current_event.next_event:
-            self.next_event = current_location.events.get(current_event.next_event)
+            self.next_event = current_location.events.get(
+                current_event.next_event
+            )
 
     def play_scene(self) -> None:
         logger.info("Attempting to play event if required")
@@ -142,7 +151,7 @@ class Manager:
         self.play_description()
         get_valid_input(self)
 
-    #TODO: fix return types
+    # TODO: fix return types
     def handle_command(self, command: Command, argument: Optional[str]):
         command_map = {
             Command.TAKE: (self.handle_take, True),
@@ -150,7 +159,7 @@ class Manager:
             Command.GO: (self.handle_go, True),
             Command.DROP: (self.handle_drop, True),
             Command.INVENTORY: (self.handle_inventory, False),
-            Command.HELP: (self.handle_help, False)
+            Command.HELP: (self.handle_help, False),
         }
 
         handler, needs_arg = command_map[command]
@@ -221,7 +230,10 @@ class Manager:
     def handle_examine(self, item: str) -> bool:
         current_location = self.require_data(self.location)
 
-        if item not in current_location.items and item not in self.player.items:
+        if (
+            item not in current_location.items
+            and item not in self.player.items
+        ):
             logger.debug(f"Player tried to examine an invalid item: {item}")
             self.handle_narration(f"You can't find the {item} here.", "action")
         elif item in self.player.items:
@@ -237,7 +249,7 @@ class Manager:
             logger.info("Player checked inventory: empty")
             self.handle_narration("Your inventory is empty!", "action")
             return False
-        
+
         logger.info("Player checked inventory")
         inventory_text = "\n".join(f"- {item}" for item in self.player.items)
         self.handle_narration(inventory_text, "action")
@@ -248,6 +260,7 @@ class Manager:
             ", ".join([cmd.value for cmd in Command]), "action"
         )
         return False
+
 
 # required rebuild as event uses forward reference to manager in the trigger func lambda
 Event.model_rebuild()

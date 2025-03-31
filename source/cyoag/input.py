@@ -2,7 +2,7 @@
 
 import logging
 from enum import Enum
-from typing import List, TYPE_CHECKING
+from typing import TYPE_CHECKING, List
 
 if TYPE_CHECKING:
     from cyoag.manager import Manager
@@ -51,7 +51,7 @@ def get_valid_input(manager: "Manager") -> None:
             continue
 
         argument = inputs[1] if len(inputs) > 1 else None
-        
+
         if manager.handle_command(command, argument):
             break
 
@@ -68,7 +68,8 @@ def get_valid_choice(manager: "Manager", event: "Event"):
             logging.info("Valid choice!")
             command, argument = INPUTS.get(outcome.command), outcome.argument
             if command is None:
-                raise ValueError(f"Invalid command in outcome: {outcome.command}")
+                raise ValueError(
+                    f"Invalid command in outcome: {outcome.command}"
+                )
             manager.handle_command(command, argument)
             return outcome
-
