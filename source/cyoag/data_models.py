@@ -27,6 +27,7 @@ class Event(BaseModel):
     id: int
     trigger: Dict[str, str]
     trigger_func: Optional[Callable[["Manager"], bool]] = None
+    next_event: Optional[str]
     repeatable: bool
     played: bool = False
     description: List[str]

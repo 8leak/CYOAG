@@ -61,12 +61,15 @@ def get_valid_choice(manager: "Manager", event: "Event"):
     while True:
         user_input: str = rich.input("\n>")
 
-        if user_input not in event.outcomes:
-            rich.print("invalid choice!")
+        outcome = event.outcomes.get(user_input)
+        if outcome is None:
+            rich.print("Invalid choice!")
+            continue
         else:
-            logging.info("valid choice!")
-            outcome = event.outcomes[user_input]
+            logging.info("Valid choice!")
             command, argument = INPUTS.get(outcome.command), outcome.argument
+            if command is None:
+                raise ValueError(f"Invalid command in outcome: {outcome.command}")
             manager.handle_command(command, argument)
             return outcome
 

@@ -1,4 +1,5 @@
 # pyright: standard
+from argparse import ArgumentDefaultsHelpFormatter
 import json
 import logging
 import time
@@ -34,6 +35,12 @@ class Manager:
         if value is None:
             raise RuntimeError(f"{value} cannot be None")
         return value
+    
+    def ensure_argument(self, command: str, argument: Optional[str]) -> str | None:
+        if not argument:
+            self.handle_narration(f"{command} requires an argument.", "action")
+            return None
+        return argument
 
     def trigger_func_constructor(self, trigger_data: Dict[str,str]):
         trigger_type = trigger_data.get("type")
@@ -111,47 +118,58 @@ class Manager:
         logger.info("Game closed")
 
     def play_description(self) -> None:
+        logger.info("Attemping to play location description...")
         self.handle_narration(self.location, "narration")
         print(*self.require_data(self.location).exits, sep=", ")
 
     def play_event(self) -> None:
         if self.next_event is None:
             raise RuntimeError("next_event must be set before calling play_event()")
-        logger.info(f"Playing event: {self.next_event.name}")
+        
+        current_event = self.require_data(self.next_event)
+        current_location = self.require_data(self.location)
+
+        logger.info(f"Playing event: {current_event.name}")
 
         rich.print()
-        self.handle_narration(self.next_event, "narration")
+        self.handle_narration(current_event, "narration")
 
-        outcome = get_valid_choice(self, self.next_event)
+        outcome = get_valid_choice(self, current_event)
         self.handle_narration(outcome, "narration")
         
-        if not self.next_event.repeatable:
-            self.next_event.played = True
+        #todo: check logic, move to EventsManager?
+        if not current_event.repeatable:
+            current_event.played = True
             self.next_event = None
-        else:
-            self.next_event = self.next_event.next_event
+        elif current_event.next_event:
+            self.next_event = current_location.events.get(current_event.next_event)
 
     def play_scene(self) -> None:
+        logger.info("Attempting to play event if required")
         if self.next_event and not self.next_event.played:
             self.play_event()
 
         self.play_description()
         get_valid_input(self)
 
-    def handle_command(self, command, argument):
-        if command == Command.TAKE:
-            self.handle_take(argument)
-        elif command == Command.EXAMINE:
-            self.handle_examine(argument)
-        elif command == Command.GO:
-            if self.handle_go(argument):
+    # fix return types
+    def handle_command(self, command: Command, argument: Optional[str]):
+        command_map = {
+            Command.TAKE: (self.handle_take, True),
+            Command.EXAMINE: (self.handle_examine, True),
+            Command.GO: (self.handle_go, True),
+            Command.DROP: (self.handle_drop, True),
+            Command.INVENTORY: (self.handle_inventory, False),
+            Command.HELP: (self.handle_help, False)
+        }
+        handler, needs_arg = command_map[command]
+
+        if needs_arg:
+            if (arg := self.ensure_argument(command.value, argument)) is None:
                 return True
-        elif command == Command.DROP:
-            self.handle_drop(argument)
-        elif command == Command.INVENTORY:
-            self.handle_inventory()
-        elif command == Command.HELP:
-            self.handle_help()
+            return handler(arg)
+        else:
+            return handler()
 
     def update_items(self, item: str, action: str) -> None:
         current_location = self.require_data(self.location)
@@ -178,7 +196,6 @@ class Manager:
             logger.info(
                 f"(manager.py) manager.location successfully updated to: {exit}"
             )
-
             return True
 
     def handle_take(self, item: str) -> None:
@@ -211,6 +228,7 @@ class Manager:
     def handle_examine(self, item: str) -> None:
         current_location = self.require_data(self.location)
 
+        #todo: refactor
         if item not in current_location.items and item not in self.player.items:
             logger.debug(f"Player tried to examine an invalid item: {item}")
             self.handle_narration(f"You can't find the {item} here.", "action")
@@ -221,14 +239,15 @@ class Manager:
             logger.info(f"Player examined item in room: {item}")
             self.handle_narration(current_location.items[item], "narration")
 
-    def handle_inventory(self) -> List[str]:
-        if len(self.player.items) >= 1:
-            logger.info("Player checked inventory")
-            for item in self.player.items:
-                self.handle_narration(f"- {item}", "action")
-        else:
-            logger.info("Player checked inventory:  empty")
+    def handle_inventory(self) -> None:
+        if not self.player.items:
+            logger.info("Player checked inventory: empty")
             self.handle_narration("Your inventory is empty!", "action")
+            return
+        
+        logger.info("Player checked inventory")
+        inventory_text = "\n".join(f"- {item}" for item in self.player.items)
+        self.handle_narration(inventory_text, "action")
 
     def handle_help(self) -> None:
         self.handle_narration(

@@ -21,7 +21,6 @@ def play_game(log_level: str) -> None:
     player: Player = Player()
     narrator: Narrator = Narrator(theme_1)
     manager: Manager = Manager(player, narrator)
-    # manager._load_data()
     manager.start()
 
 
