@@ -39,12 +39,11 @@ INPUTS = {
 
 def get_valid_input(manager: "Manager") -> None:
     while True:
+        assert manager.location is not None, "manager.location cannot be None"
         logging.info(f"Current room: {manager.location.name}")
 
         user_input: str = rich.input("\n>")
-
         inputs: List[str] = user_input.lower().split()
-
         command = INPUTS.get(inputs[0])
 
         if command is None:
