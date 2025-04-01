@@ -1,29 +1,30 @@
-from typing import Dict, Optional
-from pathlib import Path
-from cyoag.data_models import Event, Item, Room
 import json
+from pathlib import Path
+from typing import Dict, Optional
+
+from cyoag.data_models import Event, Item, Room
 
 
 class DataLoader:
     def __init__(self) -> None:
-          pass
+        pass
 
     def trigger_func_constructor(self, trigger_data: Dict[str, str]):
-            trigger_type = trigger_data.get("type")
+        trigger_type = trigger_data.get("type")
 
-            if trigger_type == "room_status":
-                trigger_room: Optional[str] = trigger_data.get("room")
-                trigger_status: Optional[str] = trigger_data.get("status")
+        if trigger_type == "room_status":
+            trigger_room: Optional[str] = trigger_data.get("room")
+            trigger_status: Optional[str] = trigger_data.get("status")
 
-                if trigger_room is None or trigger_status is None:
-                    raise ValueError(
-                        "Missing required keys in trigger_data: 'room' and 'status'"
-                    )
-
-                return (
-                    lambda manager: manager.location.name == trigger_room
-                    and manager.status == trigger_status
+            if trigger_room is None or trigger_status is None:
+                raise ValueError(
+                    "Missing required keys in trigger_data: 'room' and 'status'"
                 )
+
+            return (
+                lambda manager: manager.location.name == trigger_room
+                and manager.status == trigger_status
+            )
 
     def load_data(self) -> Dict:
         current_dir = Path(__file__).resolve().parent

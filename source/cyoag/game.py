@@ -4,10 +4,10 @@ import logging
 
 import click
 
+from cyoag.data_loader import DataLoader
 from cyoag.manager import Manager
 from cyoag.player import Player
-from cyoag.theme import Narrator, theme_1
-from cyoag.data_loader import DataLoader
+from cyoag.narrator import Narrator, theme_1
 
 
 @click.command()

@@ -3,7 +3,7 @@ import subprocess
 
 from rich.console import Console
 
-from cyoag.theme import theme_1
+from cyoag.narrator import theme_1
 
 rich = Console(theme=theme_1)
 

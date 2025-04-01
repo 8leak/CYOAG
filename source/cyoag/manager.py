@@ -1,21 +1,17 @@
 # pyright: standard
-import json
 import logging
 import time
-from pathlib import Path
 from typing import Dict, Optional
 
 from rich.console import Console
 
-from cyoag.data_models import Event, Item, Room
+from cyoag.data_loader import DataLoader
+from cyoag.data_models import Event, Room
 from cyoag.input import Command, get_valid_choice, get_valid_input
 from cyoag.player import Player
-from cyoag.theme import Narrator, theme_1
-from cyoag.data_loader import DataLoader
+from cyoag.narrator import Narrator, theme_1
 
 logger = logging.getLogger(__name__)
-
-
 rich = Console(theme=theme_1)
 
 
@@ -35,6 +31,58 @@ class Manager:
         self.rooms_dict = game_data["rooms"]
         self.location = self.rooms_dict["start"]
         self.next_event = self.location.events.get("event1")
+
+    def start(self) -> None:
+        self._load_data()
+        self.handle_narration(
+            "\nCYOAG: Choose Your Own Adventure Game\n", "title"
+        )
+
+        while self.running:
+            if self.location is None:
+                raise RuntimeError("self.location must not be None.")
+            if self.location.name == "shrine":
+                self.running = False
+            else:
+                self.play_scene()
+
+        self.handle_narration("\nGAME OVER!\n", "title")
+        logger.info("Game closed")
+
+    def play_scene(self) -> None:
+        
+        logger.info(f"Check if play next_event if exists:")
+        
+        if self.next_event and self.next_event.trigger and not self.next_event.played:
+            self.play_event()
+
+        logger.info("Attempting to play description if required")
+        self.handle_narration(self.location, "narration")
+        print(*self.require_data(self.location).exits, sep=", ")
+        get_valid_input(self)
+
+    def play_event(self) -> None:
+        if self.next_event is None:
+            raise RuntimeError(
+                "next_event must be set before calling play_event()"
+            )
+
+        current_event = self.require_data(self.next_event)
+        current_location = self.require_data(self.location)
+        logger.info(f"Playing event: {current_event.name}")
+        self.handle_narration(current_event, "narration")
+        outcome = get_valid_choice(self, current_event)
+        self.handle_narration(outcome, "narration")
+
+        # todo: check logic, move to EventsManager? set from current_location.next_event?
+        if not current_event.repeatable:
+            current_event.played = True
+            self.next_event = None
+        elif current_event.next_event:
+            logger.info(f"Setting new next_event...")
+            self.next_event = current_location.events.get(current_event.next_event)
+        else:
+            self.next_event = None
 
     def handle_narration(self, entity, style: str):
         if isinstance(entity, str):
@@ -58,63 +106,7 @@ class Manager:
             return None
         return argument
 
-    def start(self) -> None:
-        self._load_data()
-        self.handle_narration(
-            "\nCYOAG: Choose Your Own Adventure Game\n", "title"
-        )
-
-        while self.running:
-            if self.location is None:
-                raise RuntimeError("self.location must not be None.")
-            if self.location.name == "shrine":
-                self.running = False
-            else:
-                self.play_scene()
-
-        self.handle_narration("\nGAME OVER!\n", "title")
-        logger.info("Game closed")
-
-    def play_description(self) -> None:
-        logger.info("Attemping to play location description...")
-        self.handle_narration(self.location, "narration")
-        print(*self.require_data(self.location).exits, sep=", ")
-
-    def play_event(self) -> None:
-        if self.next_event is None:
-            raise RuntimeError(
-                "next_event must be set before calling play_event()"
-            )
-
-        current_event = self.require_data(self.next_event)
-        current_location = self.require_data(self.location)
-
-        logger.info(f"Playing event: {current_event.name}")
-
-        rich.print()
-        self.handle_narration(current_event, "narration")
-
-        outcome = get_valid_choice(self, current_event)
-        self.handle_narration(outcome, "narration")
-
-        # todo: check logic, move to EventsManager? set from current_location.next_event?
-        if not current_event.repeatable:
-            current_event.played = True
-            self.next_event = None
-        elif current_event.next_event:
-            self.next_event = current_location.events.get(
-                current_event.next_event
-            )
-
-    def play_scene(self) -> None:
-        logger.info("Attempting to play event if required")
-        if self.next_event and not self.next_event.played:
-            self.play_event()
-
-        self.play_description()
-        get_valid_input(self)
-
-    # TODO: fix return types
+    # -------   COMMAND HANDLING ------------------
     def handle_command(self, command: Command, argument: Optional[str]):
         command_map = {
             Command.TAKE: (self.handle_take, True),
