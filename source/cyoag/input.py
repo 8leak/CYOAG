@@ -41,6 +41,9 @@ def get_valid_input(manager: "Manager") -> None:
         logging.info(f"Current room: {manager.location.name}")
 
         user_input: str = rich.input("\n>")
+        if not user_input:
+            continue
+        
         inputs: List[str] = user_input.lower().split()
         command = INPUTS.get(inputs[0])
 

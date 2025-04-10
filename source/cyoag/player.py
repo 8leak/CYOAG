@@ -1,5 +1,3 @@
-# pyright: strict
-
 from typing import Dict
 
 from cyoag.data_models import Item, Room

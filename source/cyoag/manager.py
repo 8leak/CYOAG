@@ -83,6 +83,8 @@ class Manager:
             self.next_event = current_location.events.get(current_event.next_event)
         else:
             self.next_event = None
+        
+        rich.input()
 
     def handle_narration(self, entity, style: str):
         if isinstance(entity, str):
@@ -98,9 +100,7 @@ class Manager:
             raise RuntimeError(f"{value} cannot be None")
         return value
 
-    def ensure_argument(
-        self, command: str, argument: Optional[str]
-    ) -> str | None:
+    def ensure_argument(self, command: str, argument: Optional[str]) -> str | None:
         if not argument:
             self.handle_narration(f"{command} requires an argument.", "action")
             return None
@@ -122,9 +122,7 @@ class Manager:
         if needs_arg:
             if (arg := self.ensure_argument(command.value, argument)) is None:
                 return False
-            return handler(arg)
-        else:
-            return handler()
+        return handler(argument or None)
 
     def update_items(self, item: str, action: str) -> None:
         current_location = self.require_data(self.location)
@@ -182,9 +180,10 @@ class Manager:
             self.update_items(item, "drop")
         return False
 
-    def handle_examine(self, item: Optional[str] = None) -> bool:
+    def handle_examine(self, item: Optional[str]) -> bool:
         current_location = self.require_data(self.location)
-
+        logger.info(f"Handle command item: {item}")
+        
         if not item:
             logger.info(f"Player examined room") 
             self.handle_narration(current_location, "narration")
@@ -202,7 +201,7 @@ class Manager:
             self.handle_narration(current_location.items[item], "narration")
         return False
 
-    def handle_inventory(self) -> bool:
+    def handle_inventory(self, argument: Optional[str]) -> bool:
         if not self.player.items:
             logger.info("Player checked inventory: empty")
             self.handle_narration("Your inventory is empty!", "action")
@@ -213,7 +212,7 @@ class Manager:
         self.handle_narration(inventory_text, "action")
         return False
 
-    def handle_help(self) -> bool:
+    def handle_help(self, argument: Optional[str]) -> bool:
         self.handle_narration(
             ", ".join([cmd.value for cmd in Command]), "action"
         )
