@@ -16,13 +16,19 @@
         "outcomes": {
             "twistblade": {
                 "name": "twistblade",
-                "description": ["A vulgar blade - blunt."],
+                "description": [
+                    "A vulgar blade - blunt.",
+                    "You walk on."
+                ],
                 "command": "take",
                 "argument": "twistblade"
         },
             "ring": {
                 "name": "ring",
-                "description": ["Inherited from Mr Bruce. Your index finger throbs faintly as the argent band throttles your finger bone."],
+                "description": [
+                    "Inherited from Mr Bruce.",
+                    "You slide it quickly onto your index finger and walk on."
+                ],
                 "command": "take",
                 "argument": "ring"
             }

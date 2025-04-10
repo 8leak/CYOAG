@@ -2,7 +2,9 @@
     {
         "name": "start",
         "id": 0,
-        "description": [""
+        "description": [
+            "A levelled arena in the flax.",
+            "Along the bounds, the straw-vault scurries flare and fold in the sway."
         ],
         "exits": ["dungeon", "wizard tower", "caravan"],
         "item_list": ["ring", "twistblade", "ritebeads", "bonedice", "key"],
@@ -13,7 +15,10 @@
     {
         "name": "dungeon",
         "id": 1,
-        "description": ["Pig foul and lichen hanging from the mouth like the tangled bristles of a hermit.", "Bending your knees to steady yourself on the dripslick stone, you clamber into the dark."],
+        "description": [
+            "Pig foul and lichen hang from its maw.",
+            "Bending your knees to steady yourself on the dripslick stone, you clamber into the dark."
+        ],
         "exits": ["city","shrine", "start"],
         "item_list": [],
         "items": {},

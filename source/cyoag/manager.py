@@ -110,7 +110,7 @@ class Manager:
     def handle_command(self, command: Command, argument: Optional[str]):
         command_map = {
             Command.TAKE: (self.handle_take, True),
-            Command.EXAMINE: (self.handle_examine, True),
+            Command.EXAMINE: (self.handle_examine, False),
             Command.GO: (self.handle_go, True),
             Command.DROP: (self.handle_drop, True),
             Command.INVENTORY: (self.handle_inventory, False),
@@ -182,10 +182,13 @@ class Manager:
             self.update_items(item, "drop")
         return False
 
-    def handle_examine(self, item: str) -> bool:
+    def handle_examine(self, item: Optional[str] = None) -> bool:
         current_location = self.require_data(self.location)
 
-        if (
+        if not item:
+            logger.info(f"Player examined room") 
+            self.handle_narration(current_location, "narration")
+        elif (
             item not in current_location.items
             and item not in self.player.items
         ):

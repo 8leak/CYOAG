@@ -11,7 +11,7 @@ from cyoag.narrator import Narrator, theme_1
 
 
 @click.command()
-@click.option("--log-level", default="info")
+@click.option("--log-level", default="warning")
 def play_game(log_level: str) -> None:
 
     log_level = getattr(logging, log_level.upper())
