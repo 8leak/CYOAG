@@ -4,6 +4,7 @@ import time
 from typing import Dict, Optional
 
 from rich.console import Console
+from readchar import readkey
 
 from cyoag.data_loader import DataLoader
 from cyoag.data_models import Event, Room
@@ -84,7 +85,9 @@ class Manager:
         else:
             self.next_event = None
         
-        rich.input()
+        # wait for input and print newline
+        readkey()
+        rich.print()
 
     def handle_narration(self, entity, style: str):
         if isinstance(entity, str):
