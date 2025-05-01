@@ -7,7 +7,7 @@ from cyoag.narrator import theme_1
 
 rich = Console(theme=theme_1)
 
-project_root = pathlib.Path(__file__).resolve().parents[2]
+project_root = pathlib.Path(__file__).resolve()
 src_dir = project_root / "source" / "cyoag"
 
 
