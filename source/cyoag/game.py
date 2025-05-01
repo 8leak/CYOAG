@@ -6,8 +6,8 @@ import click
 
 from cyoag.data_loader import DataLoader
 from cyoag.manager import Manager
-from cyoag.player import Player
 from cyoag.narrator import Narrator, theme_1
+from cyoag.player import Player
 
 
 @click.command()

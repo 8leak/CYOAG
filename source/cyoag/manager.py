@@ -3,21 +3,23 @@ import logging
 import time
 from typing import Dict, Optional
 
-from rich.console import Console
 from readchar import readkey
+from rich.console import Console
 
 from cyoag.data_loader import DataLoader
 from cyoag.data_models import Event, Room
 from cyoag.input import Command, get_valid_choice, get_valid_input
-from cyoag.player import Player
 from cyoag.narrator import Narrator, theme_1
+from cyoag.player import Player
 
 logger = logging.getLogger(__name__)
 rich = Console(theme=theme_1)
 
 
 class Manager:
-    def __init__(self, player: Player, narrator: Narrator, data_loader: DataLoader) -> None:
+    def __init__(
+        self, player: Player, narrator: Narrator, data_loader: DataLoader
+    ) -> None:
         self.data_loader: DataLoader = data_loader
         self.location: Optional[Room] = None
         self.player: Player = player
@@ -51,10 +53,14 @@ class Manager:
         logger.info("Game closed")
 
     def play_scene(self) -> None:
-        
-        logger.info(f"Check if play next_event if exists:")
-        
-        if self.next_event and self.next_event.trigger and not self.next_event.played:
+
+        logger.info("Check if play next_event if exists:")
+
+        if (
+            self.next_event
+            and self.next_event.trigger
+            and not self.next_event.played
+        ):
             self.play_event()
 
         logger.info("Attempting to play description if required")
@@ -80,11 +86,13 @@ class Manager:
             current_event.played = True
             self.next_event = None
         elif current_event.next_event:
-            logger.info(f"Setting new next_event...")
-            self.next_event = current_location.events.get(current_event.next_event)
+            logger.info("Setting new next_event...")
+            self.next_event = current_location.events.get(
+                current_event.next_event
+            )
         else:
             self.next_event = None
-        
+
         # wait for input and print newline
         readkey()
         rich.print()
@@ -103,7 +111,9 @@ class Manager:
             raise RuntimeError(f"{value} cannot be None")
         return value
 
-    def ensure_argument(self, command: str, argument: Optional[str]) -> str | None:
+    def ensure_argument(
+        self, command: str, argument: Optional[str]
+    ) -> str | None:
         if not argument:
             self.handle_narration(f"{command} requires an argument.", "action")
             return None
@@ -186,9 +196,9 @@ class Manager:
     def handle_examine(self, item: Optional[str]) -> bool:
         current_location = self.require_data(self.location)
         logger.info(f"Handle command item: {item}")
-        
+
         if not item:
-            logger.info(f"Player examined room") 
+            logger.info("Player examined room")
             self.handle_narration(current_location, "narration")
         elif (
             item not in current_location.items

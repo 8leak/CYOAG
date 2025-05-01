@@ -1,10 +1,12 @@
 # pyright: strict
 import logging
 from enum import Enum
-from typing import TYPE_CHECKING, List, Dict
+from typing import TYPE_CHECKING, List
+
 from rich.console import Console
-from cyoag.narrator import theme_1
+
 from cyoag.data_models import Event, Outcome
+from cyoag.narrator import theme_1
 
 if TYPE_CHECKING:
     from cyoag.manager import Manager
@@ -43,7 +45,7 @@ def get_valid_input(manager: "Manager") -> None:
         user_input: str = rich.input("\n>")
         if not user_input:
             continue
-        
+
         inputs: List[str] = user_input.lower().split()
         command = INPUTS.get(inputs[0])
 
@@ -68,7 +70,7 @@ def get_valid_choice(manager: "Manager", event: Event) -> Outcome:
         else:
             logging.info("Valid choice!")
             command, argument = INPUTS.get(outcome.command), outcome.argument
-            
+
             if command is None:
                 raise ValueError(
                     f"Invalid command in outcome: {outcome.command}"

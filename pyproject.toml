@@ -14,9 +14,9 @@ readchar = "^4.2.1"
 
 [tool.poetry.scripts]
 play = "cyoag.game:play_game"
-tidy = "cyoag.devtools:tidy"
-tidy-check = "cyoag.devtools:tidy_check"
-tidy-verbose = "cyoag.devtools:tidy_verbose"
+tidy = "devtools:tidy"
+tidy-check = "devtools:tidy_check"
+tidy-verbose = "devtools:tidy_verbose"
 
 [tool.poetry.group.dev.dependencies]
 black = "^25.1.0"
