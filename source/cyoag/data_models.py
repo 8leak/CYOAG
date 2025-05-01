@@ -23,7 +23,7 @@ class Outcome(BaseModel):
 
 
 class Event(BaseModel):
-    model_config = ConfigDict(arbitrary_types_allowed=True)
+    # model_config = ConfigDict(arbitrary_types_allowed=True)
     name: str
     id: int
     trigger: Dict[str, str]
