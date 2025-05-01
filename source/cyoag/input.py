@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, List
 
 from rich.console import Console
 
-from cyoag.data_models import Event, Outcome
+from cyoag.data_models import Event, Outcome, Command
 from cyoag.narrator import theme_1
 
 if TYPE_CHECKING:
@@ -13,16 +13,6 @@ if TYPE_CHECKING:
 
 
 rich = Console(theme=theme_1)
-
-
-class Command(Enum):
-    GO = "go"
-    TAKE = "take"
-    EXAMINE = "examine"
-    DROP = "drop"
-    INVENTORY = "inventory"
-    HELP = "help"
-
 
 INPUTS = {
     "go": Command.GO,

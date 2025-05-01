@@ -1,6 +1,7 @@
 # pyright: standard
 
 from typing import TYPE_CHECKING, Callable, Dict, List, Optional
+from enum import Enum
 
 if TYPE_CHECKING:
     from cyoag.manager import Manager
@@ -43,3 +44,11 @@ class Room(BaseModel):
     items: Dict[str, Item]
     event_list: List[str]
     events: Dict[str, Event]
+
+class Command(Enum):
+    GO = "go"
+    TAKE = "take"
+    EXAMINE = "examine"
+    DROP = "drop"
+    INVENTORY = "inventory"
+    HELP = "help"
