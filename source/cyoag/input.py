@@ -1,18 +1,16 @@
 # pyright: strict
 import logging
-from enum import Enum
 from typing import TYPE_CHECKING, List
 
 from rich.console import Console
 
-from cyoag.data_models import Event, Outcome, Command
-from cyoag.narrator import theme_1
+from cyoag.data_types import Event, Outcome, Command
 
 if TYPE_CHECKING:
     from cyoag.manager import Manager
 
 
-rich = Console(theme=theme_1)
+rich = Console()
 
 INPUTS = {
     "go": Command.GO,
@@ -57,13 +55,13 @@ def get_valid_choice(manager: "Manager", event: Event) -> Outcome:
         if outcome is None:
             rich.print("Invalid choice!")
             continue
-        else:
-            logging.info("Valid choice!")
-            command, argument = INPUTS.get(outcome.command), outcome.argument
 
-            if command is None:
-                raise ValueError(
-                    f"Invalid command in outcome: {outcome.command}"
-                )
-            manager.handle_command(command, argument)
-            return outcome
+        logging.info("Valid choice!")
+        command, argument = INPUTS.get(outcome.command), outcome.argument
+
+        if command is None:
+            raise ValueError(
+                f"Invalid command in outcome: {outcome.command}"
+            )
+        manager.handle_command(command, argument)
+        return outcome

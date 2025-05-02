@@ -1,9 +1,11 @@
 import json
+import logging
 from pathlib import Path
 from typing import Dict, Optional
 
-from cyoag.data_models import Event, Item, Room
+from cyoag.data_types import Event, Item, Room, Skin
 
+logger = logging.getLogger(__name__)
 
 class DataLoader:
     def __init__(self) -> None:
@@ -30,7 +32,7 @@ class DataLoader:
         current_dir = Path(__file__).resolve().parent
         json_path = current_dir / "data"
         data_dicts = {}
-        data_map = {"events": Event, "items": Item, "rooms": Room}
+        data_map = {"events": Event, "items": Item, "rooms": Room, "skins": Skin}
 
         for filename, class_type in data_map.items():
             with open(json_path / f"{filename}.json", "r") as file:
@@ -50,4 +52,5 @@ class DataLoader:
                 event: data_dicts["events"][event] for event in room.event_list
             }
 
+        logger.debug(data_dicts)
         return data_dicts

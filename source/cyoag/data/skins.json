@@ -1,0 +1,12 @@
+[
+    {
+        "name": "default",
+        "info": "dim cyan",
+        "warning": "bold",
+        "danger": "bold red",
+        "narration": "italic bright_white",
+        "action": "bold",
+        "choice": "bold green",
+        "title": "bold italic bright_white"
+    }
+]

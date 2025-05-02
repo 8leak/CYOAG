@@ -52,3 +52,13 @@ class Command(Enum):
     DROP = "drop"
     INVENTORY = "inventory"
     HELP = "help"
+
+class Skin(BaseModel):
+    name: str
+    info: str
+    warning: str
+    danger: str
+    narration: str
+    action: str
+    choice: str
+    title: str

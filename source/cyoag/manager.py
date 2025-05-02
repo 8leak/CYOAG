@@ -7,33 +7,38 @@ from readchar import readkey
 from rich.console import Console
 
 from cyoag.data_loader import DataLoader
-from cyoag.data_models import Event, Room
+from cyoag.data_types import Event, Room, Skin
 from cyoag.input import Command, get_valid_choice, get_valid_input
-from cyoag.narrator import Narrator, theme_1
+from cyoag.narrator import Narrator
 from cyoag.player import Player
 
 logger = logging.getLogger(__name__)
-rich = Console(theme=theme_1)
+rich = Console()
 
 
 class Manager:
     def __init__(
-        self, player: Player, narrator: Narrator, data_loader: DataLoader
+        self, player: Player, data_loader: DataLoader
     ) -> None:
         self.data_loader: DataLoader = data_loader
         self.location: Optional[Room] = None
         self.player: Player = player
         self.next_event: Optional[Event] = None
-        self.narrator: Narrator = narrator
+        self.narrator: Optional[Narrator] = None
         self.rooms_dict: Dict[str, Room] = {}
         self.running: bool = True
         self.status: Optional[str] = ""
+        self.skins_dict: Dict[str, Skin] = {}
+        self.skin: Optional[Skin] = None
 
     def _load_data(self) -> None:
         game_data = self.data_loader.load_data()
         self.rooms_dict = game_data["rooms"]
-        self.location = self.rooms_dict["start"]
+        self.location = self.rooms_dict["start"] #TODO: get rid of magic strings
         self.next_event = self.location.events.get("event1")
+        self.skins_dict = game_data["skins"]
+        self.skin = self.skins_dict["default"] # TODO: customisable
+        self.narrator = Narrator(self.skin) 
 
     def start(self) -> None:
         self._load_data()
@@ -154,15 +159,14 @@ class Manager:
             self.handle_narration(f"Cannot find {exit}!", "action")
             logger.info(f"Player tried to go to an invalid exit: {exit}")
             return False
-        else:
-            logger.info(f"Player found exit: {exit}")
-            logger.info(f"(manager.py) Updating manager.location to: {exit}")
-            self.location = self.rooms_dict[exit]
-            self.status = "entered"
-            logger.info(
-                f"(manager.py) manager.location successfully updated to: {exit}"
-            )
-            return True
+
+        logger.info(f"(manager.py) Updating manager.location to: {exit}")
+        self.location = self.rooms_dict[exit]
+        self.status = "entered"
+        logger.info(
+            f"(manager.py) manager.location successfully updated to: {exit}"
+        )
+        return True
 
     def handle_take(self, item: str) -> bool:
         current_location = self.require_data(self.location)
@@ -170,15 +174,15 @@ class Manager:
         if item not in current_location.items:
             self.narrator.say(f"You cannot find the {item}!", "action")
             logger.info(f"Player tried to take an invalid item: {item}")
-        else:
-            logger.info(f"Player found item: {item}")
-            self.update_items(item, "take")
-            self.handle_narration(f"You take the {item}!", "action")
+        
+        logger.info(f"Player found item: {item}")
+        self.update_items(item, "take")
+        self.handle_narration(f"You take the {item}!", "action")
 
-            inventory_items = ", ".join(self.player.items.keys())
-            logger.info(
-                f"Player's inventory after taking item: {inventory_items}"
-            )
+        inventory_items = ", ".join(self.player.items.keys())
+        logger.info(
+            f"Player's inventory after taking item: {inventory_items}"
+        )
         return False
 
     def handle_drop(self, item: str) -> bool:
@@ -187,10 +191,10 @@ class Manager:
             logger.info(
                 f"Player tried to drop an item not in inventory: {item}"
             )
-        else:
-            self.handle_narration(f"You drop the {item}!", "action")
-            logger.info(f"Player dropped item: {item}")
-            self.update_items(item, "drop")
+        
+        self.handle_narration(f"You drop the {item}!", "action")
+        logger.info(f"Player dropped item: {item}")
+        self.update_items(item, "drop")
         return False
 
     def handle_examine(self, item: Optional[str]) -> bool:
