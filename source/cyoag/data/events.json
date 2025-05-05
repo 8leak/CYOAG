@@ -1,0 +1,62 @@
+[
+    {
+        "name": "event1",
+        "id": 0,
+        "trigger": {"type": "room_status", "room": "start", "status": "entered"},
+        "next_event": "event2",
+        "repeatable": true,
+        "played": false,
+        "description": [
+            "Staggering in long grass across the open field and the sunbaked scrub whips at your bloodied legs.",
+            "Metallic clanking at your hip. You snatch at your belt and strain to focus your eyes in the tangerine gloom..",
+            "You hold...the blackiron twistblade lifted from that tavern sellsword?",
+            "        ...a silver ring?",
+            "        ...your string of rusting ritebeads?"
+        ],
+        "outcomes": {
+            "twistblade": {
+                "name": "twistblade",
+                "description": [
+                    "A vulgar blade - blunt.",
+                    "You walk on."
+                ],
+                "command": "take",
+                "argument": "twistblade"
+        },
+            "ring": {
+                "name": "ring",
+                "description": [
+                    "Inherited from Mr Bruce.",
+                    "You slide it quickly onto your index finger and shoulder on further.."
+                ],
+                "command": "take",
+                "argument": "ring"
+            }
+        }
+    },
+    {
+        "name": "event2",
+        "id": 1,
+        "trigger": {"type": "room_status", "room": "start", "status": "entered"},
+        "next_event": "",
+        "repeatable": false,
+        "played": false,
+        "description": [
+            "Event2 descriptionssss."
+        ],
+        "outcomes": {
+            "twistblade": {
+                "name": "twistblade",
+                "description": ["A vulgar blade - blunt."],
+                "command": "take",
+                "argument": "twistblade"
+        },
+            "ring": {
+                "name": "ring",
+                "description": ["Inherited from Mr Bruce. Your index finger throbs faintly as the argent band throttles your finger bone."],
+                "command": "take",
+                "argument": "ring"
+            }
+        }
+    }
+]

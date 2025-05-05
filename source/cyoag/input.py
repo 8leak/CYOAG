@@ -1,18 +1,16 @@
+# pyright: strict
 import logging
-from enum import Enum
-from typing import List
+from typing import TYPE_CHECKING, List
 
-import click
+from rich.console import Console
+
+from cyoag.data_types import Event, Outcome, Command
+
+if TYPE_CHECKING:
+    from cyoag.manager import Manager
 
 
-class Command(Enum):
-    GO = "go"
-    TAKE = "take"
-    EXAMINE = "examine"
-    DROP = "drop"
-    INVENTORY = "inventory"
-    HELP = "help"
-
+rich = Console()
 
 INPUTS = {
     "go": Command.GO,
@@ -27,20 +25,20 @@ INPUTS = {
 }
 
 
-def get_valid_input(manager) -> None:
+def get_valid_input(manager: "Manager") -> None:
     while True:
+        assert manager.location is not None, "manager.location cannot be None"
         logging.info(f"Current room: {manager.location.name}")
 
-        user_input: str = click.prompt(
-            click.style("What do you want to do?\n", fg="green")
-        )
+        user_input: str = rich.input("\n>")
+        if not user_input:
+            continue
 
         inputs: List[str] = user_input.lower().split()
-
         command = INPUTS.get(inputs[0])
 
         if command is None:
-            print(f"Invalid command: {inputs[0]}")
+            rich.print(f"Invalid command: {inputs[0]}")
             continue
 
         argument = inputs[1] if len(inputs) > 1 else None
@@ -49,23 +47,21 @@ def get_valid_input(manager) -> None:
             break
 
 
-def get_valid_choice(manager, choice: str) -> None:
+def get_valid_choice(manager: "Manager", event: Event) -> Outcome:
     while True:
-        event = manager.location.choices[choice]
-        # TODO: Feed in choice dynamically, reformat into Events
-        click.secho(event.description[0], fg="bright_white", italic=True)
+        user_input: str = rich.input("\n>")
 
-        user_input: str = click.prompt(
-            click.style("Make your choice", fg="green")
-        )
+        outcome = event.outcomes.get(user_input)
+        if outcome is None:
+            rich.print("Invalid choice!")
+            continue
 
-        if user_input not in event.outcomes:
-            print("invalid choice!")
-        else:
-            print("valid choice!")
-            outcome = event.outcomes[user_input]
-            print(outcome.description[0])
-            command, argument = INPUTS.get(outcome.command), outcome.argument
-            manager.handle_command(command, argument)
+        logging.info("Valid choice!")
+        command, argument = INPUTS.get(outcome.command), outcome.argument
 
-            break
+        if command is None:
+            raise ValueError(
+                f"Invalid command in outcome: {outcome.command}"
+            )
+        manager.handle_command(command, argument)
+        return outcome

@@ -9,10 +9,14 @@ packages = [{ include = "cyoag", from = "source" }]
 python = "^3.10"
 click = "^8.1.8"
 pydantic = "^2.10.6"
+rich = "^13.9.4"
+readchar = "^4.2.1"
 
 [tool.poetry.scripts]
 play = "cyoag.game:play_game"
-tidy = "cyoag.devtools:tidy"
+tidy = "devtools:tidy"
+tidy-check = "devtools:tidy_check"
+tidy-verbose = "devtools:tidy_verbose"
 
 [tool.poetry.group.dev.dependencies]
 black = "^25.1.0"
