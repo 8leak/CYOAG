@@ -3,12 +3,13 @@ import logging
 import time
 from typing import Dict, Optional
 
-from readchar import readkey
 from rich.console import Console
 
+from cyoag.command_processor import CommandProcessor
 from cyoag.data_loader import DataLoader
 from cyoag.data_types import Event, Room, Skin
-from cyoag.input import Command, get_valid_choice, get_valid_input
+from cyoag.event_manager import EventManager
+from cyoag.input import Command, get_valid_input
 from cyoag.narrator import Narrator
 from cyoag.player import Player
 
@@ -17,12 +18,12 @@ rich = Console()
 
 
 class Manager:
-    def __init__(
-        self, player: Player, data_loader: DataLoader
-    ) -> None:
+    def __init__(self, player: Player, data_loader: DataLoader) -> None:
         self.data_loader: DataLoader = data_loader
         self.location: Optional[Room] = None
         self.player: Player = player
+        self.cmd_proc: CommandProcessor = CommandProcessor(self)
+        self.event_manager: EventManager = EventManager(self)
         self.next_event: Optional[Event] = None
         self.narrator: Optional[Narrator] = None
         self.rooms_dict: Dict[str, Room] = {}
@@ -34,11 +35,13 @@ class Manager:
     def _load_data(self) -> None:
         game_data = self.data_loader.load_data()
         self.rooms_dict = game_data["rooms"]
-        self.location = self.rooms_dict["start"] #TODO: get rid of magic strings
+        self.location = self.rooms_dict[
+            "start"
+        ]  # TODO: get rid of magic strings
         self.next_event = self.location.events.get("event1")
         self.skins_dict = game_data["skins"]
-        self.skin = self.skins_dict["default"] # TODO: customisable
-        self.narrator = Narrator(self.skin) 
+        self.skin = self.skins_dict["default"]  # TODO: customisable
+        self.narrator = Narrator(self.skin)
 
     def start(self) -> None:
         self._load_data()
@@ -58,49 +61,20 @@ class Manager:
         logger.info("Game closed")
 
     def play_scene(self) -> None:
-
-        logger.info("Check if play next_event if exists:")
-
-        if (
-            self.next_event
-            and self.next_event.trigger
-            and not self.next_event.played
-        ):
-            self.play_event()
+        self.event_manager.check_and_play()
 
         logger.info("Attempting to play description if required")
         self.handle_narration(self.location, "narration")
         print(*self.require_data(self.location).exits, sep=", ")
-        get_valid_input(self)
 
-    def play_event(self) -> None:
-        if self.next_event is None:
-            raise RuntimeError(
-                "next_event must be set before calling play_event()"
-            )
+        while True:
+            cmd, arg = get_valid_input()
 
-        current_event = self.require_data(self.next_event)
-        current_location = self.require_data(self.location)
-        logger.info(f"Playing event: {current_event.name}")
-        self.handle_narration(current_event, "narration")
-        outcome = get_valid_choice(self, current_event)
-        self.handle_narration(outcome, "narration")
-
-        # todo: check logic, move to EventsManager? set from current_location.next_event?
-        if not current_event.repeatable:
-            current_event.played = True
-            self.next_event = None
-        elif current_event.next_event:
-            logger.info("Setting new next_event...")
-            self.next_event = current_location.events.get(
-                current_event.next_event
-            )
-        else:
-            self.next_event = None
-
-        # wait for input and print newline
-        readkey()
-        rich.print()
+            if cmd == "invalid":
+                self.handle_narration(f"Invalid {arg}", "action")
+                continue
+            if self.cmd_proc.handle(cmd, arg):
+                break
 
     def handle_narration(self, entity, style: str):
         if isinstance(entity, str):
@@ -115,32 +89,6 @@ class Manager:
         if value is None:
             raise RuntimeError(f"{value} cannot be None")
         return value
-
-    def ensure_argument(
-        self, command: str, argument: Optional[str]
-    ) -> str | None:
-        if not argument:
-            self.handle_narration(f"{command} requires an argument.", "action")
-            return None
-        return argument
-
-    # -------   COMMAND HANDLING ------------------
-    def handle_command(self, command: Command, argument: Optional[str]):
-        command_map = {
-            Command.TAKE: (self.handle_take, True),
-            Command.EXAMINE: (self.handle_examine, False),
-            Command.GO: (self.handle_go, True),
-            Command.DROP: (self.handle_drop, True),
-            Command.INVENTORY: (self.handle_inventory, False),
-            Command.HELP: (self.handle_help, False),
-        }
-
-        handler, needs_arg = command_map[command]
-
-        if needs_arg:
-            if (arg := self.ensure_argument(command.value, argument)) is None:
-                return False
-        return handler(argument or None)
 
     def update_items(self, item: str, action: str) -> None:
         current_location = self.require_data(self.location)
@@ -174,15 +122,14 @@ class Manager:
         if item not in current_location.items:
             self.narrator.say(f"You cannot find the {item}!", "action")
             logger.info(f"Player tried to take an invalid item: {item}")
-        
+            return False
+
         logger.info(f"Player found item: {item}")
         self.update_items(item, "take")
         self.handle_narration(f"You take the {item}!", "action")
 
         inventory_items = ", ".join(self.player.items.keys())
-        logger.info(
-            f"Player's inventory after taking item: {inventory_items}"
-        )
+        logger.info(f"Player's inventory after taking item: {inventory_items}")
         return False
 
     def handle_drop(self, item: str) -> bool:
@@ -191,7 +138,8 @@ class Manager:
             logger.info(
                 f"Player tried to drop an item not in inventory: {item}"
             )
-        
+            return False
+
         self.handle_narration(f"You drop the {item}!", "action")
         logger.info(f"Player dropped item: {item}")
         self.update_items(item, "drop")

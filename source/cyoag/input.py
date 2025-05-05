@@ -1,13 +1,13 @@
 # pyright: strict
 import logging
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING, Any, List
 
 from rich.console import Console
 
-from cyoag.data_types import Event, Outcome, Command
+from cyoag.data_types import Command, Event
 
 if TYPE_CHECKING:
-    from cyoag.manager import Manager
+    pass
 
 
 rich = Console()
@@ -25,43 +25,35 @@ INPUTS = {
 }
 
 
-def get_valid_input(manager: "Manager") -> None:
-    while True:
-        assert manager.location is not None, "manager.location cannot be None"
-        logging.info(f"Current room: {manager.location.name}")
+def get_valid_input() -> Any:
+    user_input: str = rich.input("\n>")
+    if not user_input:
+        return "invalid", "input"
 
-        user_input: str = rich.input("\n>")
-        if not user_input:
-            continue
+    inputs: List[str] = user_input.lower().split()
+    command = INPUTS.get(inputs[0])
 
-        inputs: List[str] = user_input.lower().split()
-        command = INPUTS.get(inputs[0])
+    if command is None:
+        return "invalid", "command"
 
-        if command is None:
-            rich.print(f"Invalid command: {inputs[0]}")
-            continue
-
-        argument = inputs[1] if len(inputs) > 1 else None
-
-        if manager.handle_command(command, argument):
-            break
+    argument = inputs[1] if len(inputs) > 1 else None
+    return command, argument
 
 
-def get_valid_choice(manager: "Manager", event: Event) -> Outcome:
-    while True:
-        user_input: str = rich.input("\n>")
+def get_valid_choice(event: Event) -> Any:
+    user_input: str = rich.input("\n>")
 
-        outcome = event.outcomes.get(user_input)
-        if outcome is None:
-            rich.print("Invalid choice!")
-            continue
+    outcome = event.outcomes.get(user_input)
+    if outcome is None:
+        return "invalid", "choice", "none"
 
-        logging.info("Valid choice!")
-        command, argument = INPUTS.get(outcome.command), outcome.argument
+    logging.info("Valid choice!")
+    command, argument = (
+        INPUTS.get(outcome.command),
+        outcome.argument,
+    )
 
-        if command is None:
-            raise ValueError(
-                f"Invalid command in outcome: {outcome.command}"
-            )
-        manager.handle_command(command, argument)
-        return outcome
+    if command is None:
+        raise ValueError(f"Invalid command in outcome: {outcome.command}")
+
+    return command, argument, outcome

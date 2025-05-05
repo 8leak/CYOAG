@@ -3,9 +3,7 @@ import subprocess
 
 from rich.console import Console
 
-from cyoag.narrator import theme_1
-
-rich = Console(theme=theme_1)
+rich = Console()
 
 project_root = pathlib.Path(__file__).resolve().parent
 src_dir = project_root / "source" / "cyoag"
