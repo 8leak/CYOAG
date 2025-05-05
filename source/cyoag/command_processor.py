@@ -1,5 +1,5 @@
-from cyoag.data_types import Command, Tuple, Callable, Dict
-from typing import Optional
+from cyoag.data_types import Command, Callable, Dict
+from typing import Optional, Tuple
 
 import logging
 logger = logging.getLogger(__name__)

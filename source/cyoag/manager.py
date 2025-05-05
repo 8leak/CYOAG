@@ -22,7 +22,7 @@ class Manager:
         self.data_loader: DataLoader = data_loader
         self.location: Optional[Room] = None
         self.player: Player = player
-        self.cmd_proc = CommandProcessor(self)
+        self.cmd_proc: CommandProcessor = CommandProcessor(self)
         self.next_event: Optional[Event] = None
         self.narrator: Optional[Narrator] = None
         self.rooms_dict: Dict[str, Room] = {}
