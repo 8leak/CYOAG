@@ -1,12 +1,12 @@
 # pyright: standard
 
-from typing import TYPE_CHECKING, Callable, Dict, List, Optional
 from enum import Enum
+from typing import TYPE_CHECKING, Callable, Dict, List, Optional
 
 if TYPE_CHECKING:
     from cyoag.manager import Manager
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel
 
 
 class Item(BaseModel):
@@ -45,6 +45,7 @@ class Room(BaseModel):
     event_list: List[str]
     events: Dict[str, Event]
 
+
 class Command(Enum):
     GO = "go"
     TAKE = "take"
@@ -52,6 +53,7 @@ class Command(Enum):
     DROP = "drop"
     INVENTORY = "inventory"
     HELP = "help"
+
 
 class Skin(BaseModel):
     name: str

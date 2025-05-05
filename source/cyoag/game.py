@@ -6,12 +6,13 @@ import click
 
 from cyoag.data_loader import DataLoader
 from cyoag.manager import Manager
+
 # from cyoag.narrator import Narrator
 from cyoag.player import Player
 
 
 @click.command()
-@click.option("--log-level", default="warning")
+@click.option("--log-level", default="info")
 def play_game(log_level: str) -> None:
 
     log_level = getattr(logging, log_level.upper())
@@ -23,6 +24,7 @@ def play_game(log_level: str) -> None:
     data_loader: DataLoader = DataLoader()
     manager: Manager = Manager(player, data_loader)
     manager.start()
+
 
 if __name__ == "__main__":
     play_game()

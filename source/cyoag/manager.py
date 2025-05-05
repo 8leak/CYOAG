@@ -17,9 +17,7 @@ rich = Console()
 
 
 class Manager:
-    def __init__(
-        self, player: Player, data_loader: DataLoader
-    ) -> None:
+    def __init__(self, player: Player, data_loader: DataLoader) -> None:
         self.data_loader: DataLoader = data_loader
         self.location: Optional[Room] = None
         self.player: Player = player
@@ -34,11 +32,13 @@ class Manager:
     def _load_data(self) -> None:
         game_data = self.data_loader.load_data()
         self.rooms_dict = game_data["rooms"]
-        self.location = self.rooms_dict["start"] #TODO: get rid of magic strings
+        self.location = self.rooms_dict[
+            "start"
+        ]  # TODO: get rid of magic strings
         self.next_event = self.location.events.get("event1")
         self.skins_dict = game_data["skins"]
-        self.skin = self.skins_dict["default"] # TODO: customisable
-        self.narrator = Narrator(self.skin) 
+        self.skin = self.skins_dict["default"]  # TODO: customisable
+        self.narrator = Narrator(self.skin)
 
     def start(self) -> None:
         self._load_data()
@@ -63,7 +63,7 @@ class Manager:
 
         if (
             self.next_event
-            and self.next_event.trigger
+            and self.next_event.trigger  # use event triggers
             and not self.next_event.played
         ):
             self.play_event()
@@ -71,7 +71,16 @@ class Manager:
         logger.info("Attempting to play description if required")
         self.handle_narration(self.location, "narration")
         print(*self.require_data(self.location).exits, sep=", ")
-        get_valid_input(self)
+
+        while True:
+            cmd, arg = get_valid_input(self)
+
+            if cmd == "invalid":
+                print(f"Invalid {arg}")
+                continue
+            elif not self.handle_command(cmd, arg):
+                continue
+            break
 
     def play_event(self) -> None:
         if self.next_event is None:
@@ -83,7 +92,16 @@ class Manager:
         current_location = self.require_data(self.location)
         logger.info(f"Playing event: {current_event.name}")
         self.handle_narration(current_event, "narration")
-        outcome = get_valid_choice(self, current_event)
+        # outcome = get_valid_choice(self, current_event)
+
+        while True:
+            cmd, arg, outcome = get_valid_choice(self, current_event)
+
+            if cmd == "invalid":
+                print(f"Invalid {arg}")
+                continue
+            break
+
         self.handle_narration(outcome, "narration")
 
         # todo: check logic, move to EventsManager? set from current_location.next_event?
@@ -174,15 +192,14 @@ class Manager:
         if item not in current_location.items:
             self.narrator.say(f"You cannot find the {item}!", "action")
             logger.info(f"Player tried to take an invalid item: {item}")
-        
+            return False
+
         logger.info(f"Player found item: {item}")
         self.update_items(item, "take")
         self.handle_narration(f"You take the {item}!", "action")
 
         inventory_items = ", ".join(self.player.items.keys())
-        logger.info(
-            f"Player's inventory after taking item: {inventory_items}"
-        )
+        logger.info(f"Player's inventory after taking item: {inventory_items}")
         return False
 
     def handle_drop(self, item: str) -> bool:
@@ -191,7 +208,8 @@ class Manager:
             logger.info(
                 f"Player tried to drop an item not in inventory: {item}"
             )
-        
+            return False
+
         self.handle_narration(f"You drop the {item}!", "action")
         logger.info(f"Player dropped item: {item}")
         self.update_items(item, "drop")

@@ -1,9 +1,12 @@
-from rich.console import Console
-from rich.theme import Theme
-from cyoag.data_types import Skin
 import logging
 
+from rich.console import Console
+from rich.theme import Theme
+
+from cyoag.data_types import Skin
+
 logger = logging.getLogger(__name__)
+
 
 class Narrator:
     def __init__(self, skin: Skin) -> None:
