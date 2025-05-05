@@ -9,7 +9,7 @@
         ],
         "exits": ["dungeon", "wizard tower", "caravan"],
         "item_list": ["ring", "twistblade", "ritebeads", "bonedice", "key"],
-        "event_list": ["event1"]
+        "event_list": ["event1", "event2"]
     },
     {
         "name": "dungeon",

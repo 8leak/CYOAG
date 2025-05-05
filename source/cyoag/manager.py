@@ -7,9 +7,10 @@ from readchar import readkey
 from rich.console import Console
 
 from cyoag.command_processor import CommandProcessor
+from cyoag.event_manager import EventManager
 from cyoag.data_loader import DataLoader
 from cyoag.data_types import Event, Room, Skin
-from cyoag.input import Command, get_valid_choice, get_valid_input
+from cyoag.input import Command, get_valid_input
 from cyoag.narrator import Narrator
 from cyoag.player import Player
 
@@ -23,6 +24,7 @@ class Manager:
         self.location: Optional[Room] = None
         self.player: Player = player
         self.cmd_proc: CommandProcessor = CommandProcessor(self)
+        self.event_manager: EventManager = EventManager(self)
         self.next_event: Optional[Event] = None
         self.narrator: Optional[Narrator] = None
         self.rooms_dict: Dict[str, Room] = {}
@@ -60,15 +62,7 @@ class Manager:
         logger.info("Game closed")
 
     def play_scene(self) -> None:
-
-        logger.info("Check if play next_event if exists:")
-
-        if (
-            self.next_event
-            and self.next_event.trigger  # use event triggers
-            and not self.next_event.played
-        ):
-            self.play_event()
+        self.event_manager.check_and_play()
 
         logger.info("Attempting to play description if required")
         self.handle_narration(self.location, "narration")
@@ -82,43 +76,6 @@ class Manager:
                 continue
             if self.cmd_proc.handle(cmd, arg):
                 break
-
-    def play_event(self) -> None:
-        if self.next_event is None:
-            raise RuntimeError(
-                "next_event must be set before calling play_event()"
-            )
-
-        current_event = self.require_data(self.next_event)
-        current_location = self.require_data(self.location)
-        logger.info(f"Playing event: {current_event.name}")
-        self.handle_narration(current_event, "narration")
-
-        while True:
-            cmd, arg, outcome = get_valid_choice(current_event)
-
-            if cmd == "invalid":
-                print(f"Invalid {arg}")
-                continue
-            break
-
-        self.handle_narration(outcome, "narration")
-
-        # todo: check logic, move to EventsManager? set from current_location.next_event?
-        if not current_event.repeatable:
-            current_event.played = True
-            self.next_event = None
-        elif current_event.next_event:
-            logger.info("Setting new next_event...")
-            self.next_event = current_location.events.get(
-                current_event.next_event
-            )
-        else:
-            self.next_event = None
-
-        # wait for input and print newline
-        readkey()
-        rich.print()
 
     def handle_narration(self, entity, style: str):
         if isinstance(entity, str):

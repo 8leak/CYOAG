@@ -5,8 +5,6 @@ import click
 
 from cyoag.data_loader import DataLoader
 from cyoag.manager import Manager
-
-# from cyoag.narrator import Narrator
 from cyoag.player import Player
 
 
