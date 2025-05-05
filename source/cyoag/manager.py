@@ -6,12 +6,12 @@ from typing import Dict, Optional
 from readchar import readkey
 from rich.console import Console
 
+from cyoag.command_processor import CommandProcessor
 from cyoag.data_loader import DataLoader
 from cyoag.data_types import Event, Room, Skin
 from cyoag.input import Command, get_valid_choice, get_valid_input
 from cyoag.narrator import Narrator
 from cyoag.player import Player
-from cyoag.command_processor import CommandProcessor
 
 logger = logging.getLogger(__name__)
 rich = Console()

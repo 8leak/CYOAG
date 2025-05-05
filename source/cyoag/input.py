@@ -7,7 +7,7 @@ from rich.console import Console
 from cyoag.data_types import Command, Event
 
 if TYPE_CHECKING:
-    from cyoag.manager import Manager
+    pass
 
 
 rich = Console()
@@ -54,8 +54,6 @@ def get_valid_choice(event: Event) -> Any:
     )
 
     if command is None:
-        raise ValueError(
-            f"Invalid command in outcome: {outcome.command}"
-        )
-    
+        raise ValueError(f"Invalid command in outcome: {outcome.command}")
+
     return command, argument, outcome

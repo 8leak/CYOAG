@@ -1,5 +1,6 @@
 # pyright: standard
 import logging
+
 import click
 
 from cyoag.data_loader import DataLoader

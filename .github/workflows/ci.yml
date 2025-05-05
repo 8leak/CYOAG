@@ -16,6 +16,6 @@ jobs:
           poetry install
       - name: Lint & Format check
         run: |
-          poetry run ruff .
+          poetry run ruff check .
           poetry run black --check .
           poetry run isort --check .
