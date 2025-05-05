@@ -25,7 +25,7 @@ INPUTS = {
 }
 
 
-def get_valid_input(manager: "Manager") -> Any:
+def get_valid_input() -> Any:
     user_input: str = rich.input("\n>")
     if not user_input:
         return "invalid", "input"
@@ -40,8 +40,7 @@ def get_valid_input(manager: "Manager") -> Any:
     return command, argument
 
 
-def get_valid_choice(manager: "Manager", event: Event) -> Any:
-    # while True:
+def get_valid_choice(event: Event) -> Any:
     user_input: str = rich.input("\n>")
 
     outcome = event.outcomes.get(user_input)
@@ -53,11 +52,10 @@ def get_valid_choice(manager: "Manager", event: Event) -> Any:
         INPUTS.get(outcome.command),
         outcome.argument,
     )
-    return command, argument, outcome
 
-    # if command is None:
-    #     raise ValueError(
-    #         f"Invalid command in outcome: {outcome.command}"
-    #     )
-    # manager.handle_command(command, argument)
-    # return outcome
+    if command is None:
+        raise ValueError(
+            f"Invalid command in outcome: {outcome.command}"
+        )
+    
+    return command, argument, outcome

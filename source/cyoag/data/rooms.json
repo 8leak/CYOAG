@@ -9,9 +9,7 @@
         ],
         "exits": ["dungeon", "wizard tower", "caravan"],
         "item_list": ["ring", "twistblade", "ritebeads", "bonedice", "key"],
-        "items": {},
-        "event_list": ["event1"],
-        "events": {}
+        "event_list": ["event1"]
     },
     {
         "name": "dungeon",
@@ -22,9 +20,7 @@
         ],
         "exits": ["city","shrine", "start"],
         "item_list": [],
-        "items": {},
-        "event_list": ["event1"],
-        "events": {}
+        "event_list": ["event1"]
     },
     {
         "name": "wizard tower",
@@ -32,9 +28,7 @@
         "description": ["wiz tower description"],
         "exits": ["dungeon", "wizard tower", "caravan"],
         "item_list": [],
-        "items": {},
-        "event_list": [],
-        "events": {}
+        "event_list": []
     },
     {
         "name": "caravan",
@@ -42,9 +36,7 @@
         "description": ["caravan description"],
         "exits": ["dungeon", "wizard tower", "caravan"],
         "item_list": [],
-        "items": {},
-        "event_list": [],
-        "events": {}
+        "event_list": []
     },
     {
         "name": "city",
@@ -52,9 +44,7 @@
         "description": ["city description"],
         "exits": ["dungeon", "wizard tower", "caravan"],
         "item_list": [],
-        "items": {},
-        "event_list": [],
-        "events": {}
+        "event_list": []
     },
     {
         "name": "shrine",
@@ -62,8 +52,6 @@
         "description": ["shrine description"],
         "exits": ["dungeon","wizard tower","caravan"],
         "item_list": [],
-        "items": {},
-        "event_list": [],
-        "events": {}
+        "event_list": []
     }
 ]

@@ -11,6 +11,7 @@ from cyoag.data_types import Event, Room, Skin
 from cyoag.input import Command, get_valid_choice, get_valid_input
 from cyoag.narrator import Narrator
 from cyoag.player import Player
+from cyoag.command_processor import CommandProcessor
 
 logger = logging.getLogger(__name__)
 rich = Console()
@@ -21,6 +22,7 @@ class Manager:
         self.data_loader: DataLoader = data_loader
         self.location: Optional[Room] = None
         self.player: Player = player
+        self.cmd_proc = CommandProcessor(self)
         self.next_event: Optional[Event] = None
         self.narrator: Optional[Narrator] = None
         self.rooms_dict: Dict[str, Room] = {}
@@ -73,14 +75,13 @@ class Manager:
         print(*self.require_data(self.location).exits, sep=", ")
 
         while True:
-            cmd, arg = get_valid_input(self)
+            cmd, arg = get_valid_input()
 
             if cmd == "invalid":
-                print(f"Invalid {arg}")
+                self.handle_narration(f"Invalid {arg}", "action")
                 continue
-            elif not self.handle_command(cmd, arg):
-                continue
-            break
+            if self.cmd_proc.handle(cmd, arg):
+                break
 
     def play_event(self) -> None:
         if self.next_event is None:
@@ -92,10 +93,9 @@ class Manager:
         current_location = self.require_data(self.location)
         logger.info(f"Playing event: {current_event.name}")
         self.handle_narration(current_event, "narration")
-        # outcome = get_valid_choice(self, current_event)
 
         while True:
-            cmd, arg, outcome = get_valid_choice(self, current_event)
+            cmd, arg, outcome = get_valid_choice(current_event)
 
             if cmd == "invalid":
                 print(f"Invalid {arg}")
@@ -133,32 +133,6 @@ class Manager:
         if value is None:
             raise RuntimeError(f"{value} cannot be None")
         return value
-
-    def ensure_argument(
-        self, command: str, argument: Optional[str]
-    ) -> str | None:
-        if not argument:
-            self.handle_narration(f"{command} requires an argument.", "action")
-            return None
-        return argument
-
-    # -------   COMMAND HANDLING ------------------
-    def handle_command(self, command: Command, argument: Optional[str]):
-        command_map = {
-            Command.TAKE: (self.handle_take, True),
-            Command.EXAMINE: (self.handle_examine, False),
-            Command.GO: (self.handle_go, True),
-            Command.DROP: (self.handle_drop, True),
-            Command.INVENTORY: (self.handle_inventory, False),
-            Command.HELP: (self.handle_help, False),
-        }
-
-        handler, needs_arg = command_map[command]
-
-        if needs_arg:
-            if (arg := self.ensure_argument(command.value, argument)) is None:
-                return False
-        return handler(argument or None)
 
     def update_items(self, item: str, action: str) -> None:
         current_location = self.require_data(self.location)

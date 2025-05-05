@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Callable, Dict, List, Optional
 if TYPE_CHECKING:
     from cyoag.manager import Manager
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class Item(BaseModel):
@@ -41,9 +41,9 @@ class Room(BaseModel):
     description: List[str]
     exits: List[str]
     item_list: List[str]
-    items: Dict[str, Item]
+    items: Dict[str, Item] = Field(default_factory=dict)
     event_list: List[str]
-    events: Dict[str, Event]
+    events: Dict[str, Event] = Field(default_factory=dict)
 
 
 class Command(Enum):
