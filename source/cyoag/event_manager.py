@@ -1,10 +1,11 @@
 import logging
+from typing import TYPE_CHECKING, Optional
+
 from readchar import readkey
-from typing import Optional, TYPE_CHECKING
+from rich.console import Console
 
 from cyoag.data_types import Event
 from cyoag.input import get_valid_choice
-from rich.console import Console
 
 if TYPE_CHECKING:
     from cyoag.manager import Manager
@@ -20,9 +21,9 @@ class EventManager:
     def check_and_play(self) -> None:
         logger.info("Checking if event has been triggered...")
         event = self._find_triggered_event()
-        
+
         logger.info(f"Event: {event}")
-        if event: 
+        if event:
             self._play(event)
 
     def _find_triggered_event(self) -> Optional[Event]:
@@ -42,7 +43,7 @@ class EventManager:
         while True:
             logger.info(f"Playing event: {event.name}")
             self.manager.handle_narration(event, "narration")
-            
+
             cmd, arg, outcome = get_valid_choice(event)
 
             if cmd != "invalid":
@@ -57,7 +58,9 @@ class EventManager:
             self.next_event = None
         elif event.next_event:
             logger.info("Setting new next_event...")
-            self.manager.next_event = self.manager.location.events[event.next_event]
+            self.manager.next_event = self.manager.location.events[
+                event.next_event
+            ]
         else:
             self.manager.next_event = None
 
