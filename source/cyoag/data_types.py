@@ -64,3 +64,10 @@ class Skin(BaseModel):
     action: str
     choice: str
     title: str
+
+
+class MetaData(BaseModel):
+    start_room: str
+    end_room: str
+    default_skin: str
+    initial_event: str

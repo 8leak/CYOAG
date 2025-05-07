@@ -4,6 +4,7 @@ import logging
 import click
 
 from cyoag.data_loader import DataLoader
+from cyoag.game_data import GameData
 from cyoag.manager import Manager
 from cyoag.player import Player
 
@@ -17,9 +18,8 @@ def play_game(log_level: str) -> None:
         level=log_level, format="%(asctime)s - %(levelname)s - %(message)s"
     )
 
-    player: Player = Player()
-    data_loader: DataLoader = DataLoader()
-    manager: Manager = Manager(player, data_loader)
+    game_data = GameData(DataLoader())
+    manager = Manager(Player(), game_data)
     manager.start()
 
 
