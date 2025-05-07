@@ -1,0 +1,6 @@
+{
+    "start_room":   "start",
+    "end_room":     "shrine",
+    "default_skin": "default",
+    "initial_event": "event1"
+}

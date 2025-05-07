@@ -1,14 +1,14 @@
 # pyright: standard
 import logging
 import time
-from typing import Dict, Optional
+from typing import Optional
 
 from rich.console import Console
 
 from cyoag.command_processor import CommandProcessor
-from cyoag.data_loader import DataLoader
-from cyoag.data_types import Event, Room, Skin
+from cyoag.data_types import Event
 from cyoag.event_manager import EventManager
+from cyoag.game_data import GameData
 from cyoag.input import Command, get_valid_input
 from cyoag.narrator import Narrator
 from cyoag.player import Player
@@ -18,33 +18,21 @@ rich = Console()
 
 
 class Manager:
-    def __init__(self, player: Player, data_loader: DataLoader) -> None:
-        self.data_loader: DataLoader = data_loader
-        self.location: Optional[Room] = None
+    def __init__(self, player: Player, data: GameData) -> None:
         self.player: Player = player
+        self.rooms = data.rooms
+        self.location = data.start_room
+        self.skins = data.skins
+        self.skin = data.default_skin
         self.cmd_proc: CommandProcessor = CommandProcessor(self)
         self.event_manager: EventManager = EventManager(self)
-        self.next_event: Optional[Event] = None
-        self.narrator: Optional[Narrator] = None
-        self.rooms_dict: Dict[str, Room] = {}
+        self.next_event: Optional[Event] = self.location.events[
+            data.initial_event_key
+        ]
+        self.narrator: Optional[Narrator] = Narrator(self.skin)
         self.running: bool = True
-        self.status: Optional[str] = ""
-        self.skins_dict: Dict[str, Skin] = {}
-        self.skin: Optional[Skin] = None
-
-    def _load_data(self) -> None:
-        game_data = self.data_loader.load_data()
-        self.rooms_dict = game_data["rooms"]
-        self.location = self.rooms_dict[
-            "start"
-        ]  # TODO: get rid of magic strings
-        self.next_event = self.location.events.get("event1")
-        self.skins_dict = game_data["skins"]
-        self.skin = self.skins_dict["default"]  # TODO: customisable
-        self.narrator = Narrator(self.skin)
 
     def start(self) -> None:
-        self._load_data()
         self.handle_narration(
             "\nCYOAG: Choose Your Own Adventure Game\n", "title"
         )

@@ -1,16 +1,27 @@
 import json
 import logging
 from pathlib import Path
-from typing import Dict, Optional
+from typing import Dict, Optional, Type, TypeVar
 
-from cyoag.data_types import Event, Item, Room, Skin
+from pydantic import BaseModel
+
+from cyoag.data_types import Event, Item, MetaData, Room, Skin
 
 logger = logging.getLogger(__name__)
 
+T = TypeVar("T", bound=BaseModel)
+
 
 class DataLoader:
-    def __init__(self) -> None:
-        pass
+    DATA_DIR = Path(__file__).parent / "data"
+
+    def _load_collection(self, filename: str, model: Type[T]) -> Dict[str, T]:
+        raw = json.loads((self.DATA_DIR / f"{filename}.json").read_text())
+        return {obj["name"]: model(**obj) for obj in raw}
+
+    def _load_meta(self) -> MetaData:
+        raw_text = (self.DATA_DIR / "meta.json").read_text(encoding="utf8")
+        return MetaData.model_validate_json(raw_text)
 
     def trigger_func_constructor(self, trigger_data: Dict[str, str]):
         trigger_type = trigger_data.get("type")
@@ -30,33 +41,20 @@ class DataLoader:
             )
 
     def load_data(self) -> Dict:
-        current_dir = Path(__file__).resolve().parent
-        json_path = current_dir / "data"
-        data_dicts = {}
-        data_map = {
-            "events": Event,
-            "items": Item,
-            "rooms": Room,
-            "skins": Skin,
+        data = {
+            "events": self._load_collection("events", Event),
+            "items": self._load_collection("items", Item),
+            "rooms": self._load_collection("rooms", Room),
+            "skins": self._load_collection("skins", Skin),
+            "meta": self._load_meta(),
         }
 
-        for filename, class_type in data_map.items():
-            with open(json_path / f"{filename}.json", "r") as file:
-                data = [class_type(**items) for items in json.load(file)]
-                data_dicts.update(
-                    {filename: {item.name: item for item in data}}
-                )
-
-        for event in data_dicts["events"].values():
+        for event in data["events"].values():
             event.trigger_func = self.trigger_func_constructor(event.trigger)
 
-        for room in data_dicts["rooms"].values():
-            room.items = {
-                item: data_dicts["items"][item] for item in room.item_list
-            }
-            room.events = {
-                event: data_dicts["events"][event] for event in room.event_list
-            }
+        for room in data["rooms"].values():
+            room.items = {n: data["items"][n] for n in room.item_list}
+            room.events = {n: data["events"][n] for n in room.event_list}
 
-        logger.debug(data_dicts)
-        return data_dicts
+        logger.debug(data)
+        return data
