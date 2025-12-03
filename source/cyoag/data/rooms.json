@@ -5,7 +5,7 @@
         "description": [
             "CLEARING",
             "A levelled arena in the flax.",
-            "Along the bounds, the straw-vault scurries flare and fold in the sway."
+            "Along the bounds, the straw-vault scurries flare and fold and sway."
         ],
         "exits": ["dungeon", "wizard tower", "caravan"],
         "item_list": ["ring", "twistblade", "ritebeads", "bonedice", "key"],
