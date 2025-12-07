@@ -21,7 +21,7 @@
         ],
         "exits": ["city","shrine", "start"],
         "item_list": [],
-        "event_list": ["event1"],
+        "event_list": [],
         "door_list": ["ladder", "locked", "tunnel"]
     },
     {
@@ -36,7 +36,7 @@
     {
         "name": "fountain",
         "id": 3,
-        "description": ["Mountain description"],
+        "description": ["Fountain description"],
         "exits": ["dungeon", "wizard tower", "caravan"],
         "item_list": [],
         "event_list": [],

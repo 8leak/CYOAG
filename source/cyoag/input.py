@@ -15,6 +15,7 @@ rich = Console()
 INPUTS = {
     "go": Command.GO,
     "take": Command.TAKE,
+    "use": Command.USE,
     "examine": Command.EXAMINE,
     "look": Command.EXAMINE,
     "drop": Command.DROP,
@@ -36,7 +37,25 @@ def get_valid_input() -> Any:
     if command is None:
         return "invalid", "command"
 
-    argument = inputs[1] if len(inputs) > 1 else None
+    rest = inputs[1:]
+
+    if command is Command.USE:
+        if "on" in rest:
+            on_index = rest.index("on")
+            item_words = rest[:on_index]
+            target_words = rest[on_index + 1 :]
+
+            item = " ".join(item_words) if item_words else None
+            target = " ".join(target_words) if target_words else None
+
+            argument = (item, target)
+        else:
+            item = " ".join(rest) if rest else None
+            argument = (item, None)
+
+        return command, argument
+
+    argument = " ".join(rest) if rest else None
     return command, argument
 
 

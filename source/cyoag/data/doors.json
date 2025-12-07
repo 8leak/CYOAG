@@ -39,7 +39,7 @@
         "name": "gate",
         "id": 4,
         "description": ["A shiny brass gate."],
-        "rooms": ["locked", "shrine"],
+        "rooms": ["fountain", "shrine"],
         "locked": false,
         "bashable": true,
         "flammable": true

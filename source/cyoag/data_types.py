@@ -50,6 +50,7 @@ class Room(BaseModel):
 class Command(Enum):
     GO = "go"
     TAKE = "take"
+    USE = "use"
     EXAMINE = "examine"
     DROP = "drop"
     INVENTORY = "inventory"

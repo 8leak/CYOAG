@@ -217,6 +217,64 @@ class Manager:
         )
         return False
 
+    def handle_use(self, arg) -> bool:
+        current_location = self.require_data(self.location)
+        item_name, target_name = arg
+
+        if item_name not in self.player.items:
+            self.handle_narration(
+                f"You do not have item '{item_name}' to use", "action"
+            )
+            logger.info(
+                f"Player tried to use an item no in inventory: '{item_name}'"
+            )
+            return False
+
+        if not target_name:
+            self.handle_narration(
+                f"You fiddle with the {item_name}, but nothing obvious happens.",
+                "action",
+            )
+            logger.info(f"Player used {item_name} with no target")
+            return False
+
+        if target_name not in current_location.door_list:
+            self.handle_narration(
+                f"You can't find any {target_name} here to use that on.",
+                "action",
+            )
+            logger.info(
+                f"Player tried to use {item_name} on invalid target: {target_name}"
+            )
+            return False
+
+        door = self.doors.get(target_name)
+        if door is None:
+            self.handle_narration(
+                f"The {target_name} does not exist.", "action"
+            )
+            logger.error(
+                f"Door '{target_name}' in door_list but not in manager.doors"
+            )
+            return False
+
+        if door.locked:
+            door.locked = False
+            self.handle_narration(
+                f"You unlock {target_name} with the {item_name}.", "action"
+            )
+            logger.info(
+                f"Player unlocked door '{target_name}' with {item_name}"
+            )
+
+        else:
+            self.handle_narration(
+                f"You used {item_name} on the {target_name} but it was already unlocked.",
+                "action",
+            )
+
+        return False
+
 
 # required rebuild as event uses forward reference to manager in the trigger func lambda
 Event.model_rebuild()

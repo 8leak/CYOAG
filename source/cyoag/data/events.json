@@ -3,7 +3,7 @@
         "name": "event1",
         "id": 0,
         "trigger": {"type": "room_status", "room": "start", "status": "entered"},
-        "next_event": "event2",
+        "next_event": "",
         "repeatable": true,
         "played": false,
         "description": [
