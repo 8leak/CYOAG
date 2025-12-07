@@ -97,7 +97,7 @@ class Manager:
             return False
 
         logger.info(f"(manager.py) Updating manager.location to: {exit}")
-        self.location = self.rooms_dict[exit]
+        self.location = self.rooms[exit]
         self.status = "entered"
         logger.info(
             f"(manager.py) manager.location successfully updated to: {exit}"

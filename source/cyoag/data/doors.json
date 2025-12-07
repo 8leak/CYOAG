@@ -1,0 +1,26 @@
+[
+    {
+        "name": "1_ladder",
+        "id": 0,
+        "description": ["An obisdian throatcutter"],
+        "locked": false,
+        "bashable": true,
+        "flammable": true
+    },
+    {
+        "name": "1_locked",
+        "id": 1,
+        "description": ["So shiny you can see your face in it"],
+        "locked": true,
+        "bashable": true,
+        "flammable": false
+    },
+    {
+        "name": "1_east",
+        "id": 2,
+        "description": ["For praying with"],
+        "locked": false,
+        "bashable": true,
+        "flammable": true
+    }
+]
