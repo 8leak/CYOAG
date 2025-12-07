@@ -16,7 +16,7 @@
         "id": 1,
         "description": [
             "Pig foul and lichen hang from its maw.",
-            "Bending your knees to steady yourself on the dripslick stone, you clamber into the dark."
+            "Bending your knees to steady yourself on the dripslick stone. You clamber into the dark."
         ],
         "exits": ["city","shrine", "start"],
         "item_list": [],
