@@ -5,7 +5,7 @@ from typing import Dict, Optional, Type, TypeVar
 
 from pydantic import BaseModel
 
-from cyoag.data_types import Event, Item, MetaData, Room, Skin, Door
+from cyoag.data_types import Door, Event, Item, MetaData, Room, Skin
 
 logger = logging.getLogger(__name__)
 

@@ -1,8 +1,6 @@
 # pyright: standard
 
 from enum import Enum
-from re import S
-import sre_compile
 from typing import TYPE_CHECKING, Callable, Dict, List, Optional
 
 if TYPE_CHECKING:
@@ -75,11 +73,12 @@ class MetaData(BaseModel):
     default_skin: str
     initial_event: str
 
+
 class Door(BaseModel):
-     name: str
-     id: int
-     description: List[str]
-     rooms: List[str]
-     locked: bool
-     bashable: bool
-     flammable: bool
+    name: str
+    id: int
+    description: List[str]
+    rooms: List[str]
+    locked: bool
+    bashable: bool
+    flammable: bool

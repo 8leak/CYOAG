@@ -96,20 +96,24 @@ class Manager:
 
         if door_name not in current_location.door_list:
             self.handle_narration(f"Cannot find {door_name:}!", "action")
-            logger.info(f"Player tried to go through an invalid door: {door_name}")
+            logger.info(
+                f"Player tried to go through an invalid door: {door_name}"
+            )
             return False
-        
+
         door = self.doors.get(door_name)
         if door is None:
             self.handle_narration("That door doesn't seem to exist.", "action")
-            logger.error(f"Door '{door_name}' is in door_list but not in manager.doors")
+            logger.error(
+                f"Door '{door_name}' is in door_list but not in manager.doors"
+            )
             return False
-        
+
         if door.locked:
-            self.handle_narration(f"Its locked.", "action")
+            self.handle_narration("Its locked.", "action")
             logger.info(f"Player tried to use locked door {door_name}")
             return False
-        
+
         current_room_name = self.location.name
         next_room_name = None
 
@@ -120,23 +124,25 @@ class Manager:
 
         if next_room_name is None:
             self.handle_narration(
-            f"The {door_name} doesn't seem to lead anywhere.", "action")
+                f"The {door_name} doesn't seem to lead anywhere.", "action"
+            )
             logger.error(
                 f"Door '{door_name}' has rooms={door.rooms} but none differ "
-                f"from current_room_name='{current_room_name}'")
+                f"from current_room_name='{current_room_name}'"
+            )
             return False
-    
-        self.location =self.rooms[next_room_name]
-        
+
+        self.location = self.rooms[next_room_name]
+
         self.status = "entered"
-        logger.info(f"(manager.py) Updated manager.status successfully updated to entered")
-        
+        logger.info(
+            "(manager.py) Updated manager.status successfully updated to entered"
+        )
 
         logger.info(
             f"(manager.py) Player moved through '{door_name}' "
             f"from '{current_room_name}' to '{next_room_name}'"
         )
-
 
         return True
 
