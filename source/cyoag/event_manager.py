@@ -22,7 +22,7 @@ class EventManager:
         logger.info("Checking if event has been triggered...")
         event = self._find_triggered_event()
 
-        logger.info(f"Event: {event}")
+        # logger.info(f"Event: {event}")
         if event:
             self._play(event)
 
@@ -45,11 +45,13 @@ class EventManager:
             self.manager.handle_narration(event, "narration")
 
             cmd, arg, outcome = get_valid_choice(event)
+            logger.info(f"command, arg: {cmd}, {arg}")
 
             if cmd != "invalid":
-                print(f"Invalid {arg}")
                 break
+            print(f"Invalid {arg}")
 
+        self.manager.cmd_proc.handle(cmd, arg)
         self.manager.handle_narration(outcome, "narration")
 
         # todo: check logic, move to EventsManager? set from current_location.next_event?

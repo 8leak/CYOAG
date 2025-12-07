@@ -8,8 +8,9 @@
             "Along the bounds, the straw-vault scurries flare and fold and sway."
         ],
         "exits": ["dungeon", "wizard tower", "caravan"],
-        "item_list": ["ring", "twistblade", "ritebeads", "bonedice", "key"],
-        "event_list": ["event1", "event2"]
+        "item_list": ["ring", "twistblade", "ritebeads", "bonedice"],
+        "event_list": ["event1", "event2"],
+        "door_list": ["tomb"]
     },
     {
         "name": "dungeon",
@@ -20,38 +21,43 @@
         ],
         "exits": ["city","shrine", "start"],
         "item_list": [],
-        "event_list": ["event1"]
+        "event_list": ["event1"],
+        "door_list": ["ladder", "locked", "tunnel"]
     },
     {
-        "name": "wizard tower",
+        "name": "mine",
         "id": 2,
-        "description": ["wiz tower description"],
+        "description": ["Mine description"],
         "exits": ["dungeon", "wizard tower", "caravan"],
-        "item_list": [],
-        "event_list": []
+        "item_list": ["iron key"],
+        "event_list": [],
+        "door_list": ["ladder"]
     },
     {
-        "name": "caravan",
+        "name": "fountain",
         "id": 3,
-        "description": ["caravan description"],
+        "description": ["Mountain description"],
         "exits": ["dungeon", "wizard tower", "caravan"],
         "item_list": [],
-        "event_list": []
+        "event_list": [],
+        "door_list": ["locked", "gate"]
     },
     {
-        "name": "city",
+        "name": "fight",
         "id": 4,
-        "description": ["city description"],
+        "description": ["Fight room description"],
         "exits": ["dungeon", "wizard tower", "caravan"],
         "item_list": [],
-        "event_list": []
+        "event_list": [],
+        "door_list": ["tunnel"]
     },
     {
         "name": "shrine",
         "id": 5,
-        "description": ["shrine description"],
+        "description": ["endgame shrine description"],
         "exits": ["dungeon","wizard tower","caravan"],
         "item_list": [],
-        "event_list": []
+        "event_list": [],
+        "door_list": ["gate"]
     }
 ]

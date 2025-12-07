@@ -1,7 +1,7 @@
 from typing import Dict, Optional
 
 from cyoag.data_loader import DataLoader
-from cyoag.data_types import Event, Item, MetaData, Room, Skin
+from cyoag.data_types import Event, Item, MetaData, Room, Skin, Door
 
 
 class GameData:
@@ -13,6 +13,7 @@ class GameData:
         self.events: Dict[str, Event] = raw["events"]
         self.items: Dict[str, Item] = raw["items"]
         self.skins: Dict[str, Skin] = raw["skins"]
+        self.doors: Dict[str, Door] = raw["doors"] 
         self.meta: MetaData = raw["meta"]
 
     @property

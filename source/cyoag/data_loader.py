@@ -5,7 +5,7 @@ from typing import Dict, Optional, Type, TypeVar
 
 from pydantic import BaseModel
 
-from cyoag.data_types import Event, Item, MetaData, Room, Skin
+from cyoag.data_types import Event, Item, MetaData, Room, Skin, Door
 
 logger = logging.getLogger(__name__)
 
@@ -46,6 +46,7 @@ class DataLoader:
             "items": self._load_collection("items", Item),
             "rooms": self._load_collection("rooms", Room),
             "skins": self._load_collection("skins", Skin),
+            "doors": self._load_collection("doors", Door),
             "meta": self._load_meta(),
         }
 

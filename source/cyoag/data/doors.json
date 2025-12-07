@@ -1,24 +1,45 @@
 [
     {
-        "name": "1_ladder",
+        "name": "tomb",
         "id": 0,
-        "description": ["An obisdian throatcutter"],
+        "description": ["Worn steps into the tomb..."],
+        "rooms": ["dungeon"],
         "locked": false,
         "bashable": true,
         "flammable": true
     },
     {
-        "name": "1_locked",
+        "name": "ladder",
         "id": 1,
-        "description": ["So shiny you can see your face in it"],
+        "description": ["Woven grass rope ladder disappears into the dark"],
+        "rooms": ["dungeon", "mine"],
+        "locked": false,
+        "bashable": true,
+        "flammable": true
+    },
+    {
+        "name": "locked",
+        "id": 2,
+        "description": ["Iron door."],
+        "rooms": ["dungeon", "fountain"],
         "locked": true,
         "bashable": true,
         "flammable": false
     },
     {
-        "name": "1_east",
-        "id": 2,
-        "description": ["For praying with"],
+        "name": "tunnel",
+        "id": 3,
+        "description": ["Dusty tunnel."],
+        "rooms": ["dungeon", "fight"],
+        "locked": false,
+        "bashable": true,
+        "flammable": true
+    },
+    {
+        "name": "gate",
+        "id": 4,
+        "description": ["A shiny brass gate."],
+        "rooms": ["locked", "shrine"],
         "locked": false,
         "bashable": true,
         "flammable": true

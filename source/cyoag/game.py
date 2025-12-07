@@ -10,7 +10,7 @@ from cyoag.player import Player
 
 
 @click.command()
-@click.option("--log-level", default="info")
+@click.option("--log-level", default="warning")
 def play_game(log_level: str) -> None:
 
     log_level = getattr(logging, log_level.upper())

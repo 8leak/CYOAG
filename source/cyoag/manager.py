@@ -22,6 +22,7 @@ class Manager:
         self.player: Player = player
         self.rooms = data.rooms
         self.location = data.start_room
+        self.doors = data.doors
         self.skins = data.skins
         self.skin = data.default_skin
         self.cmd_proc: CommandProcessor = CommandProcessor(self)
@@ -53,10 +54,12 @@ class Manager:
 
         logger.info("Attempting to play description if required")
         self.handle_narration(self.location, "narration")
-        print(*self.require_data(self.location).exits, sep=", ")
+        print(*self.require_data(self.location).door_list, sep=", ")
 
         while True:
+            logger.info("Attempting to get_valid_input")
             cmd, arg = get_valid_input()
+            logger.info(f"command, arg: {cmd}, {arg}")
 
             if cmd == "invalid":
                 self.handle_narration(f"Invalid {arg}", "action")
@@ -88,20 +91,53 @@ class Manager:
         elif action == "drop":
             current_location.items[item] = self.player.drop_item(item)
 
-    def handle_go(self, exit: str) -> bool:
+    def handle_go(self, door_name: str) -> bool:
         current_location = self.require_data(self.location)
 
-        if exit not in current_location.exits:
-            self.handle_narration(f"Cannot find {exit}!", "action")
-            logger.info(f"Player tried to go to an invalid exit: {exit}")
+        if door_name not in current_location.door_list:
+            self.handle_narration(f"Cannot find {door_name:}!", "action")
+            logger.info(f"Player tried to go through an invalid door: {door_name}")
             return False
+        
+        door = self.doors.get(door_name)
+        if door is None:
+            self.handle_narration("That door doesn't seem to exist.", "action")
+            logger.error(f"Door '{door_name}' is in door_list but not in manager.doors")
+            return False
+        
+        if door.locked:
+            self.handle_narration(f"Its locked.", "action")
+            logger.info(f"Player tried to use locked door {door_name}")
+            return False
+        
+        current_room_name = self.location.name
+        next_room_name = None
 
-        logger.info(f"(manager.py) Updating manager.location to: {exit}")
-        self.location = self.rooms[exit]
+        for room_name in door.rooms:
+            if room_name != current_room_name:
+                next_room_name = room_name
+                break
+
+        if next_room_name is None:
+            self.handle_narration(
+            f"The {door_name} doesn't seem to lead anywhere.", "action")
+            logger.error(
+                f"Door '{door_name}' has rooms={door.rooms} but none differ "
+                f"from current_room_name='{current_room_name}'")
+            return False
+    
+        self.location =self.rooms[next_room_name]
+        
         self.status = "entered"
+        logger.info(f"(manager.py) Updated manager.status successfully updated to entered")
+        
+
         logger.info(
-            f"(manager.py) manager.location successfully updated to: {exit}"
+            f"(manager.py) Player moved through '{door_name}' "
+            f"from '{current_room_name}' to '{next_room_name}'"
         )
+
+
         return True
 
     def handle_take(self, item: str) -> bool:
@@ -143,6 +179,7 @@ class Manager:
         elif (
             item not in current_location.items
             and item not in self.player.items
+            and item not in self.doors
         ):
             logger.debug(f"Player tried to examine an invalid item: {item}")
             self.handle_narration(f"You can't find the {item} here.", "action")
@@ -152,6 +189,9 @@ class Manager:
         elif item in current_location.items:
             logger.info(f"Player examined item in room: {item}")
             self.handle_narration(current_location.items[item], "narration")
+        elif item in current_location.door_list:
+            logger.info(f"Player examined item in room: {item}")
+            self.handle_narration(self.doors[item], "narration")
         return False
 
     def handle_inventory(self, argument: Optional[str]) -> bool:

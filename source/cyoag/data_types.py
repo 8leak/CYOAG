@@ -1,6 +1,8 @@
 # pyright: standard
 
 from enum import Enum
+from re import S
+import sre_compile
 from typing import TYPE_CHECKING, Callable, Dict, List, Optional
 
 if TYPE_CHECKING:
@@ -44,6 +46,7 @@ class Room(BaseModel):
     items: Dict[str, Item] = Field(default_factory=dict)
     event_list: List[str]
     events: Dict[str, Event] = Field(default_factory=dict)
+    door_list: List[str]
 
 
 class Command(Enum):
@@ -71,3 +74,12 @@ class MetaData(BaseModel):
     end_room: str
     default_skin: str
     initial_event: str
+
+class Door(BaseModel):
+     name: str
+     id: int
+     description: List[str]
+     rooms: List[str]
+     locked: bool
+     bashable: bool
+     flammable: bool
